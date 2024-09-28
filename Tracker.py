@@ -23,6 +23,7 @@
 #------------------
 import socket
 import random
+import os   #Used to clear the output on the terminal
 
 #NEW!!
 import sys #Used for getting command line args
@@ -47,6 +48,12 @@ cardDeck = [
     "AD", "2D", "3D", "4D", "5D", "6D", "7D", "8D", "9D", "10D", "JD", "QD", "KD"
 ]
 
+
+#Games in Progress
+runningGames = []
+#Pass Tuples into this array of form: game_1 = (player_0, player_1)
+
+
 #Current Players in the game {Array}
 playerArray = []
 #-----------------------------------
@@ -57,6 +64,7 @@ playerArray = []
 #---------------------------
 
 #Send Message to Client
+
 
 #Receive Message
 
@@ -156,61 +164,81 @@ class CardPlayer:
 
 
 #Program Functions
-#-------------------------------------
+#-------------------------------------------------------------------------------------
 def displayMainMenu():
-    print("************************")
-    print("*         Golf         *")
-    print("************************")
-    print("1. New Game")
-    print("2. Games in Progress")
-    print("************************")
-#-------------------------------------
+    print("********************************************************************************")
+    print("*                                   Golf                                       *")
+    print("********************************************************************************")
+    print("{Server functions and their corresponding commands}\n")
+    
+    #Register the player
+    print("  [Register Player]:    register <Player Name> <IPv4> <t-port> <p-port>\n")   
+    #Returns number of players registered
+    print("  [Query Registered Players]:    query players\n")
+    print("  [Start Game]:  start game <Card Dealer Player's Name> <n> <# holes>\n")     
+    #Return the # of ongoing games, with game-identifier and the current dealer's name of that game
+    print("  [Query Games]: query games\n") 
+    #End the specified game
+    print("  [End Games]:   end <game-identifier> <Card Dealer Player's Name>\n")
+    print("  [DeRegister Player]:   de register <player>\n")
+    print("[Note]: Replace the parameters delimited by the chevrons with the relevant data")
+    print("********************************************************************************")
+#-------------------------------------------------------------------------------------
 
 
 
 #Main/Driver Space
 #-------------------------------------------------------------------------------
-print("Arguments: ", sys.argv[1])
+
+#DEBUG!!
+
+p0_Cd = []
+
+#PLAYER TUPLE EXAMPLE!!
+player_0 = (p0_Cd, "Hello!", True)
+
+p0_Cd.append('Hello')
+#Display 
+print(player_0[0][0])
 
 
-#[Requirements]:
-    #Establish a Static IP Address Port and Port range for listening 
-
-    #Make a Game
-
-
-    #Join a Game
-
-
-
-
-
-
-#Display the menu
+#Display the menu with the relevant commands for the user
 displayMainMenu()
 
 
 #While-loop that will run forever to take in user requests
 while True:
-    #Collect the user's choice for the Main Menu
-    userInput = int(input("Selection: "))
-    
-    #Use a match-case for the user to select the functions of the User Interface
-    match userInput:
-        #DEBUG BELOW!!!
-        case 1:
-            print("No Way!!")
-        
-        #DEBUG BELOW!!!
-        case 2: 
-            print("Exiting Loop!")
-            break
-        
-        case 3:
-            print("Case #3")
+    #Collect the user's commands for running functions of the Client
+    userInput = str(input("$: "))
 
-    #Break the Program loop when the user choses to exit the program
-    
-#print("Loop Successfully broken!!, END OF PROGRAM!!")
 
+    #Register Player
+    if userInput.find("register") != -1 and len(userInput) > 16:
+       print('Mkay!!')
+       print(str(len(userInput)))
+
+
+    #Query Players
+    if userInput.find("query players") != -1:
+        print('yes kay!')
+
+
+    #Start Game
+    if userInput.find("start game") != -1:
+        print('yes kay!')
+
+
+    #Query Games
+    if userInput.find("query games") != -1:
+        print('yes kay!')
+
+
+    #End Games
+    if userInput.find("end") != -1 and len(userInput) > 3:
+        print('Ayooo')
+
+
+    #DeRegister Player
+    if userInput.find("de register") != -1 and len(userInput) > 12:
+        print('Ayooo')
 #-------------------------------------------------------------------------------

@@ -6,13 +6,12 @@
 [Description]:
     [Client]
 
-    This Python script contains code for the Player to interact with the server and run games
+    This Python script contains code for the Player to interact with the server and Join ongoing games
 """
 
 
 #Relevant Libaries
 #-----------------
-import random
 import threading
 #-----------------
 
@@ -23,7 +22,8 @@ import threading
 #---------------------------------------------------------------------------------
 
 
-
 #Functions
 #-------------------------------------------------------------------------------------
+
+
 #-------------------------------------------------------------------------------------
