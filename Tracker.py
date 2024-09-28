@@ -23,15 +23,18 @@
 #------------------
 import socket
 from Player import*
+
+#DEBUG!!
+import random
 #------------------
 
 
 
 #Global Variables
-#----------------
-#Players in the game, array
-
-#----------------
+#-----------------------------------
+#Current Players in the game {Array}
+playerArray = []
+#-----------------------------------
 
 
 
@@ -43,8 +46,7 @@ from Player import*
 
 
 #Game Functions
-#----------------------------
-
+#----------------------------s
 #Add Player
 def addPlayer(newPlayer):
     #This function will add a new player to the game
@@ -62,8 +64,8 @@ def removePlayer(selectedPlayer):
 
 
 #Program Functions
-#----------------------------
-def displayMenu():
+#-------------------------------------
+def displayMainMenu():
     print("************************")
     print("*         Golf         *")
     print("************************")
@@ -71,28 +73,35 @@ def displayMenu():
     print("2. Join A Game")
     print("3. Games in Progress")
     print("************************")
-
-#----------------------------
+#-------------------------------------
 
 
 
 #Main/Driver Space
 #-------------------------------------------------------------------------------
-
-#Text Menu for the Player to Start A new Game, Join and Exisitng one, or delete it??
 #[Requirements]:
     #Make a Game
 
     #Join a Game
 
 
+
+#DEBUG Zone
+print(len(cardDeck))
+del cardDeck[0]
+del cardDeck[25]
+
+resetDeck()
+print(len(cardDeck))
+
+
 #Display the menu
-displayMenu()
+displayMainMenu()
 
 
 #While-loop that will run forever to take in user requests
 while True:
-    #Collect the user's choice for the menu
+    #Collect the user's choice for the Main Menu
     userInput = int(input("Selection: "))
     
     #Use a match-case for the user to select the functions of the User Interface
@@ -111,6 +120,6 @@ while True:
 
     #Break the Program loop when the user choses to exit the program
     
-print("Loop Successfully broken!!, END OF PROGRAM!!")
+#print("Loop Successfully broken!!, END OF PROGRAM!!")
 
 #-------------------------------------------------------------------------------
