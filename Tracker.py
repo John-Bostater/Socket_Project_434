@@ -20,15 +20,17 @@
 
 
 #Relevant Libaries
-#-----------------
+#------------------
 import socket
 from Player import*
-#-----------------
+#------------------
 
 
 
 #Global Variables
 #----------------
+#Players in the game, array
+
 #----------------
 
 
@@ -51,7 +53,7 @@ def addPlayer(newPlayer):
 
 
 #Remove Player
-def removePlayer():
+def removePlayer(selectedPlayer):
     #This function will remove the player from the game
 
     return '0' 
@@ -59,17 +61,56 @@ def removePlayer():
 
 
 
-#Main/Driver Space
+#Program Functions
 #----------------------------
+def displayMenu():
+    print("************************")
+    print("*         Golf         *")
+    print("************************")
+    print("1. New Game")
+    print("2. Join A Game")
+    print("3. Games in Progress")
+    print("************************")
+
+#----------------------------
+
+
+
+#Main/Driver Space
+#-------------------------------------------------------------------------------
 
 #Text Menu for the Player to Start A new Game, Join and Exisitng one, or delete it??
 #[Requirements]:
     #Make a Game
 
-    #Join A game
+    #Join a Game
 
 
+#Display the menu
+displayMenu()
 
-#Make a player object
-player0 = CardPlayer()
-#----------------------------
+
+#While-loop that will run forever to take in user requests
+while True:
+    #Collect the user's choice for the menu
+    userInput = int(input("Selection: "))
+    
+    #Use a match-case for the user to select the functions of the User Interface
+    match userInput:
+        #DEBUG BELOW!!!
+        case 1:
+            print("No Way!!")
+        
+        #DEBUG BELOW!!!
+        case 2: 
+            print("Exiting Loop!")
+            break
+        
+        case 3:
+            print("Case #3")
+
+    #Break the Program loop when the user choses to exit the program
+    
+print("Loop Successfully broken!!, END OF PROGRAM!!")
+
+#-------------------------------------------------------------------------------
