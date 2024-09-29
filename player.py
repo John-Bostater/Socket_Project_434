@@ -36,7 +36,7 @@ import sys
 
 #Player's Address and Port Number
 #playerAddress = ("128.110.223.3", 31501)
-playerAddress = 0
+playerAddress = (0,0)
 
 
 #Server's Socket, IPv4 & Port Number
@@ -74,6 +74,8 @@ def displayPlayerGuide():
     print("********************************************************************************")
     print("*                                   Golf                                       *")
     print("********************************************************************************")
+    #Client's Address
+    print("{Client Address}:", playerAddress, '\n')
     #Register the player
     print("  [Register Player]:                 register <Player Name> <IPv4> <t-port> <p-port>\n")   
     #Returns number of players registered
@@ -88,21 +90,13 @@ def displayPlayerGuide():
     print("\n{Client functions and their corresponding commands}\n")    
     #Start the game, this command will make the current Player become the dealer
     print("********************************************************************************")
-    print("{Command Space}\n")
+    print("{Command Space}")
 
 
 def enterPlayerSock():
     #If the user has not already defined their ipv4 address and port # in the argv[]
     #This function will be called upon to collect that information...
-
-    #
-
-
-    #Enter the Client's IPv4 Address (found via: ifconfig eth0, eth1, etc.)
-    playerAddress = (str(input("Enter Current Interface's IPv4: ")), (input("Enter the Port #: ")))
-
-
-    print('Result:', playerAddress)
+    return 0
 
     #Enter the Client's Unique Port Number {Give the Specified range}
 
@@ -123,7 +117,17 @@ if len(sys.argv) == 3:
     playerAddress = (tmpIPv4, tmpPort)
 else:
     #Manually collect the Player's IPv4 and Port
-    enterPlayerSock()
+    #Collect IPv4
+    tmpIPv4 = input("Enter Current Interface's IPv4: ")
+    
+    #Collect Port
+    tmpPort = input("Enter the Port #: ")
+
+    #Enter the Client's IPv4 Address (found via: ifconfig eth0, eth1, etc.)
+    playerAddress = (tmpIPv4, int(tmpPort))
+
+    #DEBBUG
+    print('Result:', playerAddress)
 
 
 #Create a Socket for the Client to communicate over
@@ -134,14 +138,18 @@ playerSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 playerSocket.bind(playerAddress)
 
 
+#Print the Command Menu/Main Menu
+displayPlayerGuide()
+
+
 #Keep communication running between the Client and server
 while True:
     #User can start a game from here via the correct command, "start game", this will make the player running THIS SCRIPT the Dealer
-    sendServerMessage(str(input("Command To Server: ")))
+    sendServerMessage(str(input("\nCommand To Server: ")))
 
-    #Receive response
+    #Receive response from Server
     serverResponse, serverAddress = playerSocket.recvfrom(1024)
 
-#DEBUG PRINT
-    print(f"Received Response from server: {serverResponse.decode('utf-8')}")
+    #Print the server's response
+    print(f"Server Response: {serverResponse.decode('utf-8')}")
 #-------------------------------------------------------------------------------

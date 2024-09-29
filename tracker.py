@@ -77,7 +77,7 @@ runningGames = []
 
 
 #Registered Players
-playerArray = []
+registeredPlayer = []
 
 
 #Client address of the latest message/command
@@ -134,7 +134,7 @@ def registerPlayer(playerInfo):
     
 
     #Break function here if the playerName already exists within the registered players
-    for player in playerArray:
+    for player in registeredPlayer:
         #Do NOT continue if the player's name is a duplicate
         if player[0] == playerName:
             sendClientMessage(currentClientAddress, "FAILURE")
@@ -144,7 +144,6 @@ def registerPlayer(playerInfo):
     #Update the given string and the delimeter
     playerInfo = playerInfo[(delimeter+1):]
     delimeter = playerInfo.find(' ')
-
 
     #IPv4
     ipAddress = playerInfo[0:delimeter]    
@@ -177,11 +176,11 @@ def registerPlayer(playerInfo):
 
 
     #Complete the player tuple and add it to the registered players array
-    newPlayer = (playerName, currentClientAddress, t_port, p_port, dealerFlag)
+    newPlayer = (playerName, ipAddress, t_port, p_port, dealerFlag)
 
 
     #Add the player-tuple to the queued player array
-    playerArray.append(newPlayer)
+    registeredPlayer.append(newPlayer)
 
 
 #NEW
@@ -190,7 +189,7 @@ def registerPlayer(playerInfo):
 
 
 #DEBUG!!
-#    print('Player Array:', playerArray)
+#    print('Player Array:', registeredPlayer)
 
     return 'SUCCESS'
 
@@ -208,7 +207,7 @@ def dealCards():
     #if self.dealer:
     
     #Deal each player 6 cards
-    for players in playerArray:
+    for players in registeredPlayer:
 
         #Add's 6 cards to each players deck
         for i in range(6):
@@ -300,6 +299,9 @@ while True:
         #Pass the: IPv4, t-port, and p-port
         registerPlayer(clientRequest[9:])
 
+        #DEBUG!!
+        print('Player Array After Register:',registeredPlayer)
+
 
     #Query Players
     elif clientRequest.find("query players") != -1:
@@ -333,8 +335,5 @@ while True:
     #Invalid Command
     else:
         #Send a message to the Client, informing them of their invalid command
-
-
-        #DEBUG!!
-        print('Invalid Command')
+        sendClientMessage(currentClientAddress, "Invalid Command")
 #-------------------------------------------------------------------------------
