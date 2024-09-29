@@ -102,6 +102,7 @@ serverSocket.bind(serverAddress)
 
 #Send Message to Client
 def sendClientMessage(message):
+    #
 
 
     #DEBUG
@@ -146,6 +147,8 @@ def registerPlayer(playerInfo):
     
     #t-port
     t_port = playerInfo[0:delimeter]
+    #Communication between Player and Server
+    #The server will use this port to talk back to the Client??
 
     #Update the given string and the delimeter
     playerInfo = playerInfo[(delimeter+1):]
@@ -154,6 +157,7 @@ def registerPlayer(playerInfo):
 
     #p-port
     p_port = playerInfo
+    #Communication between Player and Player
 
 
     #Dealer Flag 
@@ -172,8 +176,13 @@ def registerPlayer(playerInfo):
     playerArray.append(newPlayer)
 
 
+
+#NEW
+#Send a message back to the client, "SUCCESS"
+
+
 #DEBUG!!
-    print('Player Array:', playerArray)
+#    print('Player Array:', playerArray)
 
 
     return 0
