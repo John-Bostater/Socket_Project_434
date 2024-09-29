@@ -16,11 +16,11 @@
 
 
 [Usage]:
-    (Prompted later: Server IPv4 and Port Number)
-    >    python3 player.py <Client IPv4 Address> <Client Port Number>
+    python3 player.py
+    
+    OR
 
-    (Prompted later...)
-    >    python3 player.py
+    python3 player.py <Client IPv4 Address> <Client Port Number> <Server IPv4 Address> <Server Port Number>
 """
 
 

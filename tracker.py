@@ -19,6 +19,14 @@
     31500   to   31999
 
 
+[Usage]:
+    python3 tracker.py
+    
+    OR
+
+    python3 tracker.py <Server IPv4 Address> <Server Port Number>
+
+
 [Program Testing]:
     Program was tested/ran via 'CloudLab' experiment with two Nodes, both nodes are under the same subnet
         [Romeo]: 123.213.123.4  {Server}
@@ -263,6 +271,7 @@ while True:
     print(f'[Client Command]:\t{clientRequest}   from    {currentClientAddress}')
 
 
+#STATUS: COMPLETE
     #Register Player
     if clientRequest.find("register") != -1 and len(clientRequest) >= 28:
         #Pass the: IPv4, t-port, and p-port
@@ -272,17 +281,18 @@ while True:
         print('Player list After Register:',registeredPlayers)
 
 
+#STATUS: COMPLETE
     #Query Players
     elif clientRequest.find("query players") != -1:
         #Message of the Player Query
-        query = '\n[Number of Queried players]: ' + str(len(registeredPlayers))
+        queryMessage = '\n[Number of Registered Players]: ' + str(len(registeredPlayers))
 
         #Parse all the Registered Players/Tuples so their info can be printed
         for player in registeredPlayers:
-            query += f"\n  [\"{player[0]}\", {player[1]}, {player[2]}, {player[3]}, {player[4]}]"
+            queryMessage += f"\n  [\"{player[0]}\", {player[1]}, {player[2]}, {player[3]}, {player[4]}]"
 
         #Send the query of players to the requesting client/current client
-        sendClientMessage(currentClientAddress, query)
+        sendClientMessage(currentClientAddress, queryMessage)
 
 
     #Start Game
@@ -290,9 +300,18 @@ while True:
         print('yes kay!')
 
 
+#STATUS: INCOMPLETE
     #Query Games
     elif clientRequest.find("query games") != -1:
-        print('yes kay!')
+        #Message of the Player Query
+        queryMessage = '\n[Number of Ongoing Games]: ' + str(len(registeredPlayers))
+
+        #Parse all the Registered Players/Tuples so their info can be printed
+        for game in runningGames:
+            queryMessage += f"\n  [\"{player[0]}\", {player[1]}, {player[2]}, {player[3]}, {player[4]}]"
+
+        #Send the query of players to the requesting client/current client
+        sendClientMessage(currentClientAddress, queryMessage)
 
 
     #End Games
@@ -300,6 +319,7 @@ while True:
         print('Ayooo')
 
 
+#STATUS: INCOMPLETE
     #DeRegister Player
     elif clientRequest.find("de register") != -1 and len(clientRequest) > 12:
         print('Ayooo')
