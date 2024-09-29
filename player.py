@@ -42,7 +42,8 @@ playerAddress = (0,0)
 
 
 #Server's Socket, IPv4 & Port Number
-serverAddress = ("128.110.223.4", 31500)
+#serverAddress = ("128.110.223.4", 31500)
+serverAddress = (0,0)
 #----------------------------
 
 
@@ -111,16 +112,18 @@ def enterPlayerSock():
 #-------------------------------------------------------------------------------
 
 #If the user has not entered the relevant information, then don't do anything
-if len(sys.argv) == 3:
+if len(sys.argv) == 5:
     #Collect Input and then place into tuple 'playerAddress'
-    playerIPv4 = sys.argv[1]
-    playerPort = int(sys.argv[2])
-    playerAddress = (playerIPv4, playerPort)
+    #playerIPv4 = sys.argv[1]
+    #playerPort = int(sys.argv[2])
+    playerAddress = (sys.argv[1], int(sys.argv[2]))
+    #DEBUG
+    print('New Executed!')
 
     #Server's Address Information
-#    trackerIPv4 = sys.argv[3]
-#    trackerPort = int(sys.argv[4])
-#    serverAddress = (trackerIPv4, trackerPort)
+    trackerIPv4 = sys.argv[3]
+    trackerPort = int(sys.argv[4])
+    serverAddress = (trackerIPv4, trackerPort)
 
 else:
     #Manually collect the Player's IPv4 and Port
@@ -133,8 +136,15 @@ else:
     #Enter the Client's IPv4 Address (found via: ifconfig eth0, eth1, etc.)
     playerAddress = (tmpIPv4, int(tmpPort))
 
+    #Collect IPv4
+    tmp0IPv4 = input("Server IPv4: ")
+    tmp0Port = input("Server Port: ")
+
+    #Enter the Server's IPv4 Address 
+    serverAddress = (tmp0IPv4, tmp0Port)
+
     #DEBBUG
-    print('Result:', playerAddress)
+    print('Result:', playerAddress, serverAddress)
 
 
 #Create a Socket for the Client to communicate over

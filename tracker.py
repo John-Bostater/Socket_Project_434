@@ -87,7 +87,7 @@ serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 
 #Bind the server to the first available port, 31500
-serverAddress = ("128.110.223.4", 31500)
+serverAddress = ("128.110.223.23", 31500)
 
 
 #DEBUG!!
@@ -143,7 +143,7 @@ def registerPlayer(playerInfo):
     #t-port
     t_port = playerInfo[0:delimeter]
     #Communication between Player and Server
-    #The server will use this port to talk back to the Client??
+    #The server will use this port to talk back to the Client/Player
 
     #Update the given string and the delimeter
     playerInfo = playerInfo[(delimeter+1):]
@@ -152,7 +152,7 @@ def registerPlayer(playerInfo):
 
     #p-port
     p_port = playerInfo
-    #Communication between Player and Player
+    #Port for Communication between Player and Player
 
     #Dealer Flag 
     dealerFlag = False
@@ -260,12 +260,7 @@ while True:
     clientRequest = str(message.decode('utf-8'))
 
     #Print the incoming Client-Command
-    print(f'Client Command:\t\t{clientRequest} from {currentClientAddress}')
-
-
-#OLD!!!
-    #Collect the user's commands for running functions of the Client
-    #userInput = str(input("$: "))
+    print(f'[Client Command]:\t{clientRequest}   from    {currentClientAddress}')
 
 
     #Register Player
@@ -284,8 +279,7 @@ while True:
 
         #Parse all the Registered Players/Tuples so their info can be printed
         for player in registeredPlayers:
-            query += f"\n\t[\"{player[0]}\", {player[1]}, {player[2]}]"
-
+            query += f"\n  [\"{player[0]}\", {player[1]}, {player[2]}, {player[3]}, {player[4]}]"
 
         #Send the query of players to the requesting client/current client
         sendClientMessage(currentClientAddress, query)
