@@ -36,7 +36,7 @@
 
     {Read incoming messages as Server}
         #Receive message
-        message, client_address = serverSocket.recvfrom(1024)
+        message, clientAddress = serverSocket.recvfrom(1024)
         
         #Print message
         print(f"Received Message from Client: {message.decode('utf-8')}")
@@ -78,6 +78,10 @@ runningGames = []
 
 #Registered Players
 playerArray = []
+
+
+#Client address of the latest message/command
+currentClientAddress = 0
 #-----------------------------------
 
 
@@ -101,9 +105,9 @@ serverSocket.bind(serverAddress)
 
 
 #Send Message to Client
-def sendClientMessage(message):
-    #
-
+def sendClientMessage(clientAddress, message):
+    #Send a customized message back to the Client via their address tuple: (IPv4, Port#)
+    serverSocket.sendto(message.encode('utf-8'), clientAddress)
 
     #DEBUG
     print('Debug print')
@@ -129,7 +133,12 @@ def registerPlayer(playerInfo):
     playerName = playerInfo[0:delimeter]    
     
 
-    #Break function here if there is 
+    #Break function here if the playerName already exists within the registered players
+    for player in playerArray:
+        #Do NOT continue if the player's name is a duplicate
+        if player[0] == playerName:
+            sendClientMessage(currentClientAddress, "FAILURE")
+            return 'FAILURE'
 
 
     #Update the given string and the delimeter
@@ -159,33 +168,31 @@ def registerPlayer(playerInfo):
     p_port = playerInfo
     #Communication between Player and Player
 
-
     #Dealer Flag 
     dealerFlag = False
 
 
 #DEBUG!!
-#    print("Data Pulled: ", playerName, ipAddress, t_port, p_port)
+#    print("Data Pulled: ", playerName, clientAddress, p_port)
 
 
     #Complete the player tuple and add it to the registered players array
-    newPlayer = (playerName, ipAddress, t_port, p_port, dealerFlag)
+    newPlayer = (playerName, currentClientAddress, t_port, p_port, dealerFlag)
 
 
     #Add the player-tuple to the queued player array
     playerArray.append(newPlayer)
 
 
-
 #NEW
-#Send a message back to the client, "SUCCESS"
+    #Send a message back to the client, "SUCCESS"
+    sendClientMessage(currentClientAddress, "SUCCESS")
 
 
 #DEBUG!!
 #    print('Player Array:', playerArray)
 
-
-    return 0
+    return 'SUCCESS'
 
 
 #Remove Player
@@ -272,15 +279,15 @@ displayMainMenu()
 #While-loop that will run forever to take in commands for server manipulation
 while True:
     #Receive a Message/Request from the Client
-    message, client_address = serverSocket.recvfrom(1024)
-    #print(f"Received Message from Client: {message.decode('utf-8')} from {client_address}")
+    message, currentClientAddress = serverSocket.recvfrom(1024)
+    #print(f"Received Message from Client: {message.decode('utf-8')} from {currentClientAddress}")
 
 
     #Client Request variable 
     clientRequest = str(message.decode('utf-8'))
 
     #Print the incoming Client-Command
-    print(f'Client Command:\t\t{clientRequest} from {client_address}')
+    print(f'Client Command:\t\t{clientRequest} from {currentClientAddress}')
 
 
 #OLD!!!
