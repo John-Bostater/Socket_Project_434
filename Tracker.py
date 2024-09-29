@@ -83,9 +83,15 @@ def registerPlayer(playerInfo):
     #Delimeter for gathering relevant command info
     delimeter = playerInfo.find(' ')
 
-    #Register a new player for the query
-    
     #Place the newly made player 'tuple' into the tuple array for players waiting to queue?
+    #Register a new player for the query    
+
+    #Name
+    playerName = playerInfo[0:delimeter]    
+    
+    #Update the given string and the delimeter
+    playerInfo = playerInfo[(delimeter+1):]
+    delimeter = playerInfo.find(' ')
 
 
     #IPv4
@@ -95,18 +101,33 @@ def registerPlayer(playerInfo):
     playerInfo = playerInfo[(delimeter+1):]
     delimeter = playerInfo.find(' ')
 
-    print('The next: ' + playerInfo[0:delimeter])
     
     #t-port
+    t_port = playerInfo[0:delimeter]
+
+    #Update the given string and the delimeter
+    playerInfo = playerInfo[(delimeter+1):]
+    delimeter = playerInfo.find(' ')
 
 
     #p-port
+    p_port = playerInfo
+
+
+#DEBUG!!
+    print("Data Pulled: ", playerName, ipAddress, t_port, p_port)
+
 
 
     #Complete the player tuple and add it to the registered players array
-    
+    newPlayer = (playerName, ipAddress, t_port, p_port)
 
-    return '0'
+
+    #Add the tuple to the queued player array
+    playerArray.append(newPlayer)
+
+
+    return 0
 
 
 #Remove Player
@@ -190,11 +211,11 @@ def displayMainMenu():
 p0_Cd = []
 
 #PLAYER TUPLE EXAMPLE!!
-player_0 = (p0_Cd, "Hello!", True)
+#player_0 = (p0_Cd, "Hello!", True)
 
-p0_Cd.append('Hello')
+#p0_Cd.append('Hello')
 #Display 
-print(player_0[0][0])
+#print(player_0[0][0])
 
 
 #Display the menu with the relevant commands for the user
@@ -208,7 +229,7 @@ while True:
 
 
     #Register Player
-    if userInput.find("register") != -1:
+    if userInput.find("register") != -1 and len(userInput) >= 28:
         #Pass the: IPv4, t-port, and p-port
         registerPlayer(userInput[9:])
 
