@@ -24,8 +24,23 @@
     31500   to   31999
 
 
-[Simulate/Run Program]:
-    Program was ran via 
+[Program Testing]:
+    Program was tested/ran via 'CloudLab' experiment with two Nodes, both nodes are under the same subnet
+        [Romeo]: 123.213.123.4  {Server}
+        [Juliet]: 123.213.123.3  {Client}
+
+    Place the python script 'tracker.py' in Romeo and run it
+
+    Place the python script 'player.py' in Juliet and run it
+    calling upon the function 'sendMessage()' in player.py will send a message to the Server that can be displayed by the server 
+
+    {Read incoming messages as Server}
+        #Receive message
+        message, client_address = server_socket.recvfrom(1024)
+        
+        #Print message
+        print(f"Received Message from Client: {message.decode('utf-8')}")
+
 """
 
 
@@ -87,10 +102,10 @@ server_socket.bind(server_address)
 #LISTEN FOR MESSAGES!!
 print('Waiting for a message...')
 
-while True:
+#while True:
     #Receive message
-    message, client_address = server_socket.recvfrom(1024)
-    print(f"Received Message from Client: {message.decode('utf-8')} from {client_address}")
+ #   message, client_address = server_socket.recvfrom(1024)
+  #  print(f"Received Message from Client: {message.decode('utf-8')} from {client_address}")
 
 
 
@@ -228,18 +243,20 @@ def displayMainMenu():
     print("{Server functions and their corresponding commands}\n")
     
     #Register the player
-    print("  [Register Player]:    register <Player Name> <IPv4> <t-port> <p-port>\n")   
+    print("  [Register Player]:                 register <Player Name> <IPv4> <t-port> <p-port>\n")   
     #Returns number of players registered
-    print("  [Query Registered Players]:    query players\n")
-    print("  [Start Game]:  start game <Card Dealer Player's Name> <n> <# holes>\n")     
+    print("  [Query Registered Players]:        query players\n")
+    print("  [Start Game]:                      start game <Card Dealer Player's Name> <n> <# holes>\n")     
     #Return the # of ongoing games, with game-identifier and the current dealer's name of that game
-    print("  [Query Games]: query games\n") 
+    print("  [Query Games]:                     query games\n") 
     #End the specified game
-    print("  [End Games]:   end <game-identifier> <Card Dealer Player's Name>\n")
-    print("  [DeRegister Player]:   de register <player>\n")
+    print("  [End Games]:                       end <game-identifier> <Card Dealer Player's Name>\n")
+    print("  [DeRegister Player]:               de register <player>\n")
     print("[Note]: Replace the parameters delimited by the chevrons with the relevant data")
     print("********************************************************************************")
-    print("{Command Space}\n")
+    print("\n")
+    
+    #print("{Command Space}\n")
 #-------------------------------------------------------------------------------------
 
 
@@ -249,7 +266,7 @@ def displayMainMenu():
 
 #DEBUG!!
 
-p0_Cd = []
+#p0_Cd = []
 
 #PLAYER TUPLE EXAMPLE!!
 #player_0 = (p0_Cd, "Hello!", True)
@@ -259,43 +276,53 @@ p0_Cd = []
 #print(player_0[0][0])
 
 
-#Display the menu with the relevant commands for the user
+#Display the menu with the relevant commands for the Server
 displayMainMenu()
 
 
-#While-loop that will run forever to take in user requests
+#While-loop that will run forever to take in commands for server manipulation
 while True:
+    #Receive a Message/Request from the Client
+    message, client_address = server_socket.recvfrom(1024)
+    print(f"Received Message from Client: {message.decode('utf-8')} from {client_address}")
+
+
+    #Client Request
+
+
+
+#OLD!!!
     #Collect the user's commands for running functions of the Client
-    userInput = str(input("$: "))
+    #userInput = str(input("$: "))
 
 
     #Register Player
-    if userInput.find("register") != -1 and len(userInput) >= 28:
+    if message.find("register") != -1 and len(message) >= 28:
         #Pass the: IPv4, t-port, and p-port
-        registerPlayer(userInput[9:])
+        registerPlayer(message[9:])
 
 
     #Query Players
-    if userInput.find("query players") != -1:
+    elif message.find("query players") != -1:
         print('yes kay!')
 
 
     #Start Game
-    if userInput.find("start game") != -1:
+    elif message.find("start game") != -1:
         print('yes kay!')
 
 
     #Query Games
-    if userInput.find("query games") != -1:
+    elif message.find("query games") != -1:
         print('yes kay!')
 
 
     #End Games
-    if userInput.find("end") != -1 and len(userInput) > 3:
+    elif message.find("end") != -1 and len(message) > 3:
         print('Ayooo')
 
 
     #DeRegister Player
-    if userInput.find("de register") != -1 and len(userInput) > 12:
+    elif message.find("de register") != -1 and len(message) > 12:
         print('Ayooo')
 #-------------------------------------------------------------------------------
