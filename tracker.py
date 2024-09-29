@@ -206,7 +206,7 @@ def dealCards():
             shuffleNum = random.randint(0, len(cardDeck))
 
             #Add the cards to the players deck
-            players.addCard(cardDeck[shuffleNum])
+            players[1] = (cardDeck[shuffleNum])
 
             #Remove the pulled card from the deck
             del cardDeck[shuffleNum]
@@ -238,23 +238,9 @@ def resetDeck():
 #-------------------------------------------------------------------------------------
 def displayMainMenu():
     print("********************************************************************************")
-    print("*                                   Golf                                       *")
+    print("*                              Golf   [Server-Side]                            *")
     print("********************************************************************************")
-    print("{Server functions and their corresponding commands}\n")
-    
-    #Register the player
-    print("  [Register Player]:                 register <Player Name> <IPv4> <t-port> <p-port>\n")   
-    #Returns number of players registered
-    print("  [Query Registered Players]:        query players\n")
-    print("  [Start Game]:                      start game <Card Dealer Player's Name> <n> <# holes>\n")     
-    #Return the # of ongoing games, with game-identifier and the current dealer's name of that game
-    print("  [Query Games]:                     query games\n") 
-    #End the specified game
-    print("  [End Games]:                       end <game-identifier> <Card Dealer Player's Name>\n")
-    print("  [DeRegister Player]:               de register <player>\n")
-    print("[Note]: Replace the parameters delimited by the chevrons with the relevant data")
-    print("********************************************************************************")
-    print("\n")
+    print("{Client Commands/Messages}\n")
     
     #print("{Command Space}\n")
 #-------------------------------------------------------------------------------------
@@ -284,11 +270,14 @@ displayMainMenu()
 while True:
     #Receive a Message/Request from the Client
     message, client_address = server_socket.recvfrom(1024)
-    print(f"Received Message from Client: {message.decode('utf-8')} from {client_address}")
+    #print(f"Received Message from Client: {message.decode('utf-8')} from {client_address}")
 
 
-    #Client Request
+    #Client Request variable 
+    clientRequest = str(message.decode('utf-8'))
 
+    #Print the incoming Client-Command
+    print(f'Client Command:\t\t{clientRequest} from {client_address}')
 
 
 #OLD!!!
@@ -297,32 +286,32 @@ while True:
 
 
     #Register Player
-    if message.find("register") != -1 and len(message) >= 28:
+    if clientRequest.find("register") != -1 and len(clientRequest) >= 28:
         #Pass the: IPv4, t-port, and p-port
-        registerPlayer(message[9:])
+        registerPlayer(clientRequest[9:])
 
 
     #Query Players
-    elif message.find("query players") != -1:
+    elif clientRequest.find("query players") != -1:
         print('yes kay!')
 
 
     #Start Game
-    elif message.find("start game") != -1:
+    elif clientRequest.find("start game") != -1:
         print('yes kay!')
 
 
     #Query Games
-    elif message.find("query games") != -1:
+    elif clientRequest.find("query games") != -1:
         print('yes kay!')
 
 
     #End Games
-    elif message.find("end") != -1 and len(message) > 3:
+    elif clientRequest.find("end") != -1 and len(clientRequest) > 3:
         print('Ayooo')
 
 
     #DeRegister Player
-    elif message.find("de register") != -1 and len(message) > 12:
+    elif clientRequest.find("de register") != -1 and len(clientRequest) > 12:
         print('Ayooo')
 #-------------------------------------------------------------------------------

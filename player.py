@@ -77,7 +77,19 @@ def displayPlayerGuide():
     print("********************************************************************************")
     print("*                                   Golf                                       *")
     print("********************************************************************************")
-    print("{Client functions and their corresponding commands}\n")    
+    #Register the player
+    print("  [Register Player]:                 register <Player Name> <IPv4> <t-port> <p-port>\n")   
+    #Returns number of players registered
+    print("  [Query Registered Players]:        query players\n")
+    print("  [Start Game]:                      start game <Card Dealer Player's Name> <n> <# holes>\n")     
+    #Return the # of ongoing games, with game-identifier and the current dealer's name of that game
+    print("  [Query Games]:                     query games\n") 
+    #End the specified game
+    print("  [End Games]:                       end <game-identifier> <Card Dealer Player's Name>\n")
+    print("  [DeRegister Player]:               de register <player>\n")
+    print("[Note]: Replace the parameters delimited by the chevrons with the relevant data")
+    
+    print("\n{Client functions and their corresponding commands}\n")    
     #Start the game, this command will make the current Player become the dealer
     print("  [Start Game]:                 start game")   
     print("********************************************************************************")
