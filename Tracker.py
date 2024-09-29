@@ -1,10 +1,12 @@
 """
 [Author]: John Bostater
 
+[Socket Group #]: 61
+
 [Start Date]: 9/25/24
 
 [Description]:
-    {Networking Project}
+    {Server}
 
     Server-Python Script, maintains state information of players and ongoing games.
     This file is able to respond to players via a text-based user interface.
@@ -16,6 +18,10 @@
 
     This Server contains a fixed IP address and Port Number that the Player's/Player objects
     will use for sending and receiving information about the game
+
+    
+[Valid Port Number Range]: 
+    31500   to   31999
 """
 
 
@@ -23,10 +29,7 @@
 #------------------
 import socket
 import random
-import os   #Used to clear the output on the terminal
-
-#NEW!!
-import sys #Used for getting command line args
+import os
 #------------------
 
 
@@ -76,8 +79,32 @@ playerArray = []
 #Game Functions
 #-------------------------------------------------------------------------------------
 #Add Player
-def addPlayer(newPlayer):
-    #This function will add a new player to the game
+def registerPlayer(playerInfo):
+    #Delimeter for gathering relevant command info
+    delimeter = playerInfo.find(' ')
+
+    #Register a new player for the query
+    
+    #Place the newly made player 'tuple' into the tuple array for players waiting to queue?
+
+
+    #IPv4
+    ipAddress = playerInfo[0:delimeter]    
+    
+    #Update the given string and the delimeter
+    playerInfo = playerInfo[(delimeter+1):]
+    delimeter = playerInfo.find(' ')
+
+    print('The next: ' + playerInfo[0:delimeter])
+    
+    #t-port
+
+
+    #p-port
+
+
+    #Complete the player tuple and add it to the registered players array
+    
 
     return '0'
 
@@ -128,38 +155,6 @@ def resetDeck():
     ]
 #-------------------------------------------------------------------------------------
 
-
-
-#Player Class Object
-#---------------------------------------------------------------
-class CardPlayer:
-    #Constructor/Data Initialization
-    #------------------------------------------------------
-    def __init__(self):
-        #Array that will hold the player's uniquely dealt cards
-        self.playerDeck = []
-        
-        #Players id Number, {1-3}
-        self.userNumber = 0
-
-        #Dealer Flag
-        self.dealer = False
-    #------------------------------------------------------
-
-
-    #Methods
-    #------------------------------------------------------
-    #Print all of the cards in the player's deck
-    def showDeck(self):
-        #Print every card in the Player's deck
-        for card in self.playerDeck:
-            print(card)
-
-
-    #DEBUG PRINT
-    def debug0(self):
-        return "Wacky waving inflatable arm flailing tubeman!!"
-#---------------------------------------------------------------
 
 
 
@@ -213,9 +208,9 @@ while True:
 
 
     #Register Player
-    if userInput.find("register") != -1 and len(userInput) > 16:
-       print('Mkay!!')
-       print(str(len(userInput)))
+    if userInput.find("register") != -1:
+        #Pass the: IPv4, t-port, and p-port
+        registerPlayer(userInput[9:])
 
 
     #Query Players
@@ -242,3 +237,4 @@ while True:
     if userInput.find("de register") != -1 and len(userInput) > 12:
         print('Ayooo')
 #-------------------------------------------------------------------------------
+
