@@ -8,19 +8,14 @@
 [Description]:
     {Server}
 
-    Server-Python Script, maintains state information of players and ongoing games.
+    Server Python Script, maintains state information of players and ongoing games.
     This file is able to respond to players via a text-based user interface.
 
-    When executing the Tracker Script a paramater for the Port Number must be defined
-      [Command]:
-        > python3 Tracker.py 123456     //123456 is the port number in this case, add ip paramater?
-
-
     This Server contains a fixed IP address and Port Number that the Player's/Player objects
-    will use for sending and receiving information about the game
+    will use for sending and receiving information about the game.
 
     
-[Valid Port Number Range]: 
+[Group 61 Port Number Range]: 
     31500   to   31999
 
 
@@ -73,11 +68,10 @@ cardDeck = [
 
 #Games in Progress
 runningGames = []
-#Pass Tuples into this array of form: game_1 = (player_0, player_1)
 
 
 #Registered Players
-registeredPlayer = []
+registeredPlayers = []
 
 
 #Client address of the latest message/command
@@ -104,17 +98,10 @@ print(f"Starting server on {serverAddress}")
 serverSocket.bind(serverAddress)
 
 
-#Send Message to Client
+#Send Message to Client (Player)
 def sendClientMessage(clientAddress, message):
     #Send a customized message back to the Client via their address tuple: (IPv4, Port#)
     serverSocket.sendto(message.encode('utf-8'), clientAddress)
-
-    #DEBUG
-    print('Debug print')
-
-#Receive Message
-
-
 #---------------------------
 
 
@@ -126,7 +113,7 @@ def registerPlayer(playerInfo):
     #Delimeter for gathering relevant command info
     delimeter = playerInfo.find(' ')
 
-    #Place the newly made player 'tuple' into the tuple array for players waiting to queue?
+    #Place the newly made player 'tuple' into the tuple list for players waiting to queue?
     #Register a new player for the query    
 
     #Name
@@ -134,7 +121,7 @@ def registerPlayer(playerInfo):
     
 
     #Break function here if the playerName already exists within the registered players
-    for player in registeredPlayer:
+    for player in registeredPlayers:
         #Do NOT continue if the player's name is a duplicate
         if player[0] == playerName:
             sendClientMessage(currentClientAddress, "FAILURE")
@@ -175,12 +162,12 @@ def registerPlayer(playerInfo):
 #    print("Data Pulled: ", playerName, clientAddress, p_port)
 
 
-    #Complete the player tuple and add it to the registered players array
+    #Complete the player tuple and add it to the registered players list
     newPlayer = (playerName, ipAddress, t_port, p_port, dealerFlag)
 
 
-    #Add the player-tuple to the queued player array
-    registeredPlayer.append(newPlayer)
+    #Add the player-tuple to the queued player list
+    registeredPlayers.append(newPlayer)
 
 
 #NEW
@@ -189,7 +176,7 @@ def registerPlayer(playerInfo):
 
 
 #DEBUG!!
-#    print('Player Array:', registeredPlayer)
+#    print('Player list:', registeredPlayers)
 
     return 'SUCCESS'
 
@@ -207,7 +194,7 @@ def dealCards():
     #if self.dealer:
     
     #Deal each player 6 cards
-    for players in registeredPlayer:
+    for players in registeredPlayers:
 
         #Add's 6 cards to each players deck
         for i in range(6):
@@ -258,20 +245,7 @@ def displayMainMenu():
 
 #Main/Driver Space
 #-------------------------------------------------------------------------------
-
-#DEBUG!!
-
-#p0_Cd = []
-
-#PLAYER TUPLE EXAMPLE!!
-#player_0 = (p0_Cd, "Hello!", True)
-
-#p0_Cd.append('Hello')
-#Display 
-#print(player_0[0][0])
-
-
-#Display the menu with the relevant commands for the Server
+#Display the menu with the relevant Commands for the player to interact with the Server/Tracker
 displayMainMenu()
 
 
@@ -300,17 +274,21 @@ while True:
         registerPlayer(clientRequest[9:])
 
         #DEBUG!!
-        print('Player Array After Register:',registeredPlayer)
+        print('Player list After Register:',registeredPlayers)
 
 
     #Query Players
     elif clientRequest.find("query players") != -1:
-        #Query the players currently registered with the tracker
+        #Message of the Player Query
+        query = '\n[Number of Queried players]: ' + str(len(registeredPlayers))
 
-        #return number of registered players
+        #Parse all the Registered Players/Tuples so their info can be printed
+        for player in registeredPlayers:
+            query += f"\n\t[\"{player[0]}\", {player[1]}, {player[2]}]"
 
 
-        print('yes kay!')
+        #Send the query of players to the requesting client/current client
+        sendClientMessage(currentClientAddress, query)
 
 
     #Start Game
@@ -331,6 +309,7 @@ while True:
     #DeRegister Player
     elif clientRequest.find("de register") != -1 and len(clientRequest) > 12:
         print('Ayooo')
+
 
     #Invalid Command
     else:

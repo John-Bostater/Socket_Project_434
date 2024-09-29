@@ -11,7 +11,7 @@
     This Python script contains code for the Player to interact with the server and Join ongoing games
 
 
-[Valid Port Number Range]: 
+[Group 61 Port Number Range]: 
     31500   to   31999    
 
 
@@ -113,16 +113,22 @@ def enterPlayerSock():
 #If the user has not entered the relevant information, then don't do anything
 if len(sys.argv) == 3:
     #Collect Input and then place into tuple 'playerAddress'
-    tmpIPv4 = sys.argv[1]
-    tmpPort = int(sys.argv[2])
-    playerAddress = (tmpIPv4, tmpPort)
+    playerIPv4 = sys.argv[1]
+    playerPort = int(sys.argv[2])
+    playerAddress = (playerIPv4, playerPort)
+
+    #Server's Address Information
+#    trackerIPv4 = sys.argv[3]
+#    trackerPort = int(sys.argv[4])
+#    serverAddress = (trackerIPv4, trackerPort)
+
 else:
     #Manually collect the Player's IPv4 and Port
     #Collect IPv4
-    tmpIPv4 = input("Enter Current Interface's IPv4: ")
+    tmpIPv4 = input("Your IPv4: ")
     
     #Collect Port
-    tmpPort = input("Enter the Port #: ")
+    tmpPort = input("Your Port #: ")
 
     #Enter the Client's IPv4 Address (found via: ifconfig eth0, eth1, etc.)
     playerAddress = (tmpIPv4, int(tmpPort))
