@@ -15,7 +15,12 @@
     31500   to   31999    
 
 
-[Run Program]:
+[Usage]:
+    (Prompted later: Server IPv4 and Port Number)
+    >    python3 player.py <Client IPv4 Address> <Client Port Number>
+
+    (Prompted later...)
+    >    python3 player.py
 """
 
 
@@ -31,16 +36,13 @@ import sys
 
 #Global Variables
 #----------------------------
-#Make a tuple that will have 
-
-
-#Player's Address and Port Number
-#playerAddress = ("128.110.223.3", 31501)
+#Tuple containing Player's entered IPv4 Address and Port Number
+#[Example]: playerAddress = ("128.110.223.3", 31501)
 playerAddress = (0,0)
 
 
 #Server's Socket, IPv4 & Port Number
-serverSocket = ("128.110.223.4", 31500)
+serverAddress = ("128.110.223.4", 31500)
 #----------------------------
 
 
@@ -51,7 +53,7 @@ serverSocket = ("128.110.223.4", 31500)
 #Send a Message to the Server
 def sendServerMessage(message):
     #Send message to Server
-    playerSocket.sendto(message.encode('utf-8'), serverSocket)
+    playerSocket.sendto(message.encode('utf-8'), serverAddress)
 
 
 #Receive a Message/Response from the Server
@@ -87,7 +89,6 @@ def displayPlayerGuide():
     print("  [End Games]:                       end <game-identifier> <Card Dealer Player's Name>\n")
     print("  [DeRegister Player]:               de register <player>\n")
     print("[Note]: Replace the parameters delimited by the chevrons with the relevant data")    
-    print("\n{Client functions and their corresponding commands}\n")    
     #Start the game, this command will make the current Player become the dealer
     print("********************************************************************************")
     print("{Command Space}")
