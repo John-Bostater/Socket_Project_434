@@ -28,14 +28,11 @@ import socket
 
 #Global Variables
 #----------------------------
-#[Instantiated to default values]
-
-player_socket = 0
-
-
-#NEW!!,Server's IPv4 and Port Number
+#Instantiate the players Socket
+playerSocket = 0
 
 
+#Server's Socket, IPv4 & Port Number
 serverSocket = ("128.110.223.4", 31500)
 #----------------------------
 
@@ -47,7 +44,7 @@ serverSocket = ("128.110.223.4", 31500)
 #Send a Message to the Server
 def sendServerMessage(message):
     #Send message to Server
-    player_socket.sendto(message.encode('utf-8'), serverSocket)
+    playerSocket.sendto(message.encode('utf-8'), serverSocket)
 
 
 #Receive a Message/Response from the Server
@@ -59,15 +56,8 @@ def receiveMessage():
 #Close the Connection between the Client and the Server
 def closeConnection():
     #Close the socket connection
-    player_socket.close()
+    playerSocket.close()
 #-------------------------------------------------------------------------------------
-
-
-
-
-#Global Variables
-#---------------------------------------------------------------------------------
-#---------------------------------------------------------------------------------
 
 
 
@@ -87,11 +77,9 @@ def displayPlayerGuide():
     #End the specified game
     print("  [End Games]:                       end <game-identifier> <Card Dealer Player's Name>\n")
     print("  [DeRegister Player]:               de register <player>\n")
-    print("[Note]: Replace the parameters delimited by the chevrons with the relevant data")
-    
+    print("[Note]: Replace the parameters delimited by the chevrons with the relevant data")    
     print("\n{Client functions and their corresponding commands}\n")    
     #Start the game, this command will make the current Player become the dealer
-    print("  [Start Game]:                 start game")   
     print("********************************************************************************")
     print("{Command Space}\n")
 #-------------------------------------------------------------------------------------
@@ -102,18 +90,16 @@ def displayPlayerGuide():
 #-------------------------------------------------------------------------------
 
 
-
 #While loop for the player to send messages to the Server!!
 
 
 #Create a Socket for the Client to communicate over
-player_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+playerSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 
-#Bind the Player/Client to the Server's Socket
+#Run a while-loop to keep communication open between the Client and server
 
-
-
-#User can start a game from here via the correct command, "start game", this will make the player running THIS SCRIPT the Dealer
-sendServerMessage(str(input("Command To Server: ")))
+while True:
+    #User can start a game from here via the correct command, "start game", this will make the player running THIS SCRIPT the Dealer
+    sendServerMessage(str(input("Command To Server: ")))
 #-------------------------------------------------------------------------------

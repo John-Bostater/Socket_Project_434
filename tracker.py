@@ -36,7 +36,7 @@
 
     {Read incoming messages as Server}
         #Receive message
-        message, client_address = server_socket.recvfrom(1024)
+        message, client_address = serverSocket.recvfrom(1024)
         
         #Print message
         print(f"Received Message from Client: {message.decode('utf-8')}")
@@ -85,33 +85,27 @@ playerArray = []
 #Server-Client Functions
 #---------------------------
 #Create UDP Socket
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 
 #Bind the server to the first available port, 31500
-server_address = ("128.110.223.4", 31500)
+serverAddress = ("128.110.223.4", 31500)
+
 
 #DEBUG!!
-print(f"Starting server on {server_address}")
+print(f"Starting server on {serverAddress}")
 
 
-#Bind the socket
-server_socket.bind(server_address)
-
-
-#LISTEN FOR MESSAGES!!
-print('Waiting for a message...')
-
-#while True:
-    #Receive message
- #   message, client_address = server_socket.recvfrom(1024)
-  #  print(f"Received Message from Client: {message.decode('utf-8')} from {client_address}")
-
-
+#Bind the Server's Socket
+serverSocket.bind(serverAddress)
 
 
 #Send Message to Client
+def sendClientMessage(message):
 
+
+    #DEBUG
+    print('Debug print')
 
 #Receive Message
 
@@ -269,7 +263,7 @@ displayMainMenu()
 #While-loop that will run forever to take in commands for server manipulation
 while True:
     #Receive a Message/Request from the Client
-    message, client_address = server_socket.recvfrom(1024)
+    message, client_address = serverSocket.recvfrom(1024)
     #print(f"Received Message from Client: {message.decode('utf-8')} from {client_address}")
 
 
@@ -293,6 +287,11 @@ while True:
 
     #Query Players
     elif clientRequest.find("query players") != -1:
+        #Query the players currently registered with the tracker
+
+        #return number of registered players
+
+
         print('yes kay!')
 
 
@@ -314,4 +313,12 @@ while True:
     #DeRegister Player
     elif clientRequest.find("de register") != -1 and len(clientRequest) > 12:
         print('Ayooo')
+
+    #Invalid Command
+    else:
+        #Send a message to the Client, informing them of their invalid command
+
+
+        #DEBUG!!
+        print('Invalid Command')
 #-------------------------------------------------------------------------------
