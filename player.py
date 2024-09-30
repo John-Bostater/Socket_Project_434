@@ -74,9 +74,9 @@ def closeConnection():
 #Functions
 #-------------------------------------------------------------------------------------
 def displayPlayerGuide():
-    print("********************************************************************************")
-    print("*                                   Golf                                       *")
-    print("********************************************************************************")
+    print("****************************************************************************************")
+    print("*                                       Golf                                           *")
+    print("****************************************************************************************")
     #Client's Address
     print("{Client Address}:", playerAddress, '\n')
     #Register the player
@@ -91,7 +91,7 @@ def displayPlayerGuide():
     print("  [DeRegister Player]:               de register <player>\n")
     print("[Note]: Replace the parameters delimited by the chevrons with the relevant data")    
     #Start the game, this command will make the current Player become the dealer
-    print("********************************************************************************")
+    print("****************************************************************************************")
     print("{Command Space}")
 
 
@@ -113,17 +113,11 @@ def enterPlayerSock():
 
 #If the user has not entered the relevant information, then don't do anything
 if len(sys.argv) == 5:
-    #Collect Input and then place into tuple 'playerAddress'
-    #playerIPv4 = sys.argv[1]
-    #playerPort = int(sys.argv[2])
+    #Player's Address Info
     playerAddress = (sys.argv[1], int(sys.argv[2]))
-    #DEBUG
-    print('New Executed!')
-
+    
     #Server's Address Information
-    trackerIPv4 = sys.argv[3]
-    trackerPort = int(sys.argv[4])
-    serverAddress = (trackerIPv4, trackerPort)
+    serverAddress = (sys.argv[3], int(sys.argv[4]))
 
 else:
     #Manually collect the Player's IPv4 and Port

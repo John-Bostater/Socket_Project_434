@@ -51,13 +51,19 @@
 #------------------
 import socket
 import random
-import os
+import sys
 #------------------
 
 
 
 #Global Variables
 #-----------------------------------
+#Server Address & Port (Tuple)
+serverAddress = (0,0)
+
+#Static value
+serverPort = 31500
+
 #Main Card deck that the Dealer-Player will deal cards from
 cardDeck = [
     #Clubs
@@ -90,21 +96,9 @@ currentClientAddress = 0
 
 #Server-Client Functions
 #---------------------------
-#Create UDP Socket
-serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-
-#Bind the server to the first available port, 31500
-serverAddress = ("128.110.223.23", 31500)
-
-
-#DEBUG!!
-print(f"Starting server on {serverAddress}")
-
-
-#Bind the Server's Socket
-serverSocket.bind(serverAddress)
-
+#Take a single argv statement! 
+# python3 tracker.py <IPv4Address>
 
 #Send Message to Client (Player)
 def sendClientMessage(clientAddress, message):
@@ -166,10 +160,6 @@ def registerPlayer(playerInfo):
     dealerFlag = False
 
 
-#DEBUG!!
-#    print("Data Pulled: ", playerName, clientAddress, p_port)
-
-
     #Complete the player tuple and add it to the registered players list
     newPlayer = (playerName, ipAddress, t_port, p_port, dealerFlag)
 
@@ -178,19 +168,15 @@ def registerPlayer(playerInfo):
     registeredPlayers.append(newPlayer)
 
 
-#NEW
     #Send a message back to the client, "SUCCESS"
     sendClientMessage(currentClientAddress, "SUCCESS")
 
-
-#DEBUG!!
-#    print('Player list:', registeredPlayers)
 
     return 'SUCCESS'
 
 
 #Remove Player
-def removePlayer(selectedPlayer):
+def de_RegisterPlayer(selectedPlayer):
     #This function will remove the player from the game
 
     return '0'
@@ -253,6 +239,26 @@ def displayMainMenu():
 
 #Main/Driver Space
 #-------------------------------------------------------------------------------
+#Collect the Server IPv4 Address and Port Number, which will be [31500] for my group
+
+#Check if the user has added IPv4 in their command line argument
+if len(sys.argv) == 2:
+    #IP Address
+    print('DEBUG!')
+    serverAddress = (sys.argv[1]), serverPort)
+else:
+    print('ok')
+    #force the user's input
+
+#Bind the server to the first available port, 31500
+
+#Create UDP Socket
+serverSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+#Bind the Server's Socket
+serverSocket.bind(serverAddress)
+
+
 #Display the menu with the relevant Commands for the player to interact with the Server/Tracker
 displayMainMenu()
 
@@ -287,9 +293,14 @@ while True:
         #Message of the Player Query
         queryMessage = '\n[Number of Registered Players]: ' + str(len(registeredPlayers))
 
-        #Parse all the Registered Players/Tuples so their info can be printed
-        for player in registeredPlayers:
-            queryMessage += f"\n  [\"{player[0]}\", {player[1]}, {player[2]}, {player[3]}, {player[4]}]"
+        #Number of register players > 0
+        if len(registeredPlayers) > 0:
+            #Parse all the Registered Players/Tuples so their info can be printed
+            for player in registeredPlayers:
+                queryMessage += f"\n  [\"{player[0]}\", {player[1]}, {player[2]}, {player[3]}, {player[4]}]"
+        else:
+            #Show empty list
+            queryMessage += '\n  []'
 
         #Send the query of players to the requesting client/current client
         sendClientMessage(currentClientAddress, queryMessage)
