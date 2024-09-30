@@ -307,7 +307,13 @@ while True:
 
     #Start Game
     elif clientRequest.find("start game") != -1:
-        print('yes kay!')
+        #Make a tuple of the players and pass them into the runningGames list
+        
+        #COMEBACK AND FINISH THIS HERE!!!       
+
+        #placeholder
+        print('Placeholder')
+
 
 
 #STATUS: INCOMPLETE
@@ -326,13 +332,34 @@ while True:
 
     #End Games
     elif clientRequest.find("end") != -1 and len(clientRequest) > 3:
-        print('Ayooo')
+        print('PlaceHolder')
 
 
 #STATUS: INCOMPLETE
     #DeRegister Player
     elif clientRequest.find("de register") != -1 and len(clientRequest) > 12:
-        print('Ayooo')
+        #Message for the Client (either: SUCCESS or FAILURE)
+        deRegMsg = 'FAILURE'
+
+        #Get the player's name from the string
+        deRegName = str(clientRequest[12:])
+
+        #Check if the user is in an ongoing game, if they are, return FAILURE
+        #Parse over a copy so we can delete the player from the regular array
+        for player in registeredPlayers[:]:
+            #Player found, delete the tuple from the list
+            if player[0] == deRegName:
+                #Delete the player from the list
+                registeredPlayers.remove(player)
+                
+                #Update the message
+                deRegMsg = 'SUCCESS'
+
+                #break the loop
+                break
+
+        #Inform the Client of either their SUCCESS or FAILURE
+        sendClientMessage(currentClientAddress, deRegMsg)
 
 
     #Invalid Command
