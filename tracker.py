@@ -243,12 +243,11 @@ def displayMainMenu():
 
 #Check if the user has added IPv4 in their command line argument
 if len(sys.argv) == 2:
-    #IP Address
-    print('DEBUG!')
-    serverAddress = (sys.argv[1]), serverPort)
+    #Update the Server's address to contain 
+    serverAddress = (sys.argv[1], serverPort)
 else:
-    print('ok')
-    #force the user's input
+    #Make the user input the servers IPv4 manually
+    serverAddress = (str(input("Enter the Tracker/Server's IPv4 Address: ")), serverPort)
 
 #Bind the server to the first available port, 31500
 
