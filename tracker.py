@@ -304,7 +304,7 @@ while True:
     #Query Games
     elif clientRequest.find("query games") != -1:
         #Message of the Player Query
-        queryMessage = '\n[Number of Ongoing Games]: ' + str(len(registeredPlayers))
+        queryMessage = '\n[Number of Ongoing Games]: ' + str(len(runningGames))
 
         #Parse all the Registered Players/Tuples so their info can be printed
         for game in runningGames:
