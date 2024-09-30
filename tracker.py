@@ -276,17 +276,15 @@ while True:
     print(f'[Client Command]:\t{clientRequest}   from    {currentClientAddress}')
 
 
-#STATUS: COMPLETE
     #Register Player
     if clientRequest.find("register") != -1 and len(clientRequest) >= 28:
         #Pass the: IPv4, t-port, and p-port
         registerPlayer(clientRequest[9:])
 
-        #DEBUG!!
+    #DEBUG!!
         print('Player list After Register:',registeredPlayers)
 
 
-#STATUS: COMPLETE
     #Query Players
     elif clientRequest.find("query players") != -1:
         #Message of the Player Query
@@ -315,8 +313,6 @@ while True:
         print('Placeholder')
 
 
-
-#STATUS: INCOMPLETE
     #Query Games
     elif clientRequest.find("query games") != -1:
         #Message of the Player Query
@@ -335,7 +331,6 @@ while True:
         print('PlaceHolder')
 
 
-#STATUS: INCOMPLETE
     #DeRegister Player
     elif clientRequest.find("de register") != -1 and len(clientRequest) > 12:
         #Message for the Client (either: SUCCESS or FAILURE)
