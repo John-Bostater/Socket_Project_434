@@ -27,23 +27,8 @@
     python3 tracker.py <Server IPv4 Address> <Server Port Number>
 
 
-[Program Testing]:
-    Program was tested/ran via 'CloudLab' experiment with two Nodes, both nodes are under the same subnet
-        [Romeo]: 123.213.123.4  {Server}
-        [Juliet]: 123.213.123.3  {Client}
-
-    Place the python script 'tracker.py' in Romeo and run it
-
-    Place the python script 'player.py' in Juliet and run it
-    calling upon the function 'sendMessage()' in player.py will send a message to the Server that can be displayed by the server 
-
-    {Read incoming messages as Server}
-        #Receive message
-        message, clientAddress = serverSocket.recvfrom(1024)
-        
-        #Print message
-        print(f"Received Message from Client: {message.decode('utf-8')}")
-
+[Gameplay/Experiment]:
+    //Text here...
 """
 
 
@@ -226,13 +211,38 @@ def resetDeck():
 
 #Program Functions
 #-------------------------------------------------------------------------------------
+#Main menu of the Server/Tracker (Sets up the scene for displaying incoming messages)
 def displayMainMenu():
     print("********************************************************************************")
     print("*                              Golf   [Server-Side]                            *")
     print("********************************************************************************")
     print("{Client Commands/Messages}\n")
+
+
+#returns T/F as to whether a registered player with 'playerName' exists
+def playerIsRegistered(playerName):
+    #Parse the registeredPlayers list and return a True if found
+    for player in registeredPlayers:
+        #If the registered player's name matches that of the playerName parameter
+        if player[0] == playerName:
+            #playerName IS registered
+            return True
     
-    #print("{Command Space}\n")
+    #Else, return's false (playerName is NOT registered)
+    return False
+
+
+#returns T/F as to whether the player of 'playerName' is in an active game or not
+def playerInActiveGame(playerName):
+    #Parse the runningGames tuples and look f
+    for player in registeredPlayers:
+        #If the registered player's name matches that of the playerName parameter
+        if player[0] == playerName:
+            #playerName IS registered
+            return True
+    
+    #Else, return's false (playerName is NOT registered)
+    return False
 #-------------------------------------------------------------------------------------
 
 
@@ -281,7 +291,7 @@ while True:
         #Pass the: IPv4, t-port, and p-port
         registerPlayer(clientRequest[9:])
 
-    #DEBUG!!
+#DEBUG!!
         print('Player list After Register:',registeredPlayers)
 
 
@@ -303,14 +313,45 @@ while True:
         sendClientMessage(currentClientAddress, queryMessage)
 
 
+#LEFT OFF HERE:  10/1/24
+#[toDo]:
+    #Test to see if we are collecting 'dealerName' correctly
+    
+    #Collect <n> from the 'clientRequest' string
+
+
     #Start Game
     elif clientRequest.find("start game") != -1:
-        #Make a tuple of the players and pass them into the runningGames list
+        #Collect the parameters of the 'start game' command
+        dealerName = clientRequest[11:]
+        dealerName = dealerName[:dealerName.find(' ')]
         
-        #COMEBACK AND FINISH THIS HERE!!!       
+    #DEBUG!!
+        print('Entered Dealer Name:', dealerName)
 
-        #placeholder
-        print('Placeholder')
+        #Collect <n> number of players for the game 
+        # 
+        # (we will be selecting <n> random players from the 'registeredPlayers' list)
+        #   Check that the player we are selecting at random is not already in a game via
+        
+        #for player in registeredPlayers:
+        #   playerInActiveGame(player[0])
+
+
+        #Check that the player is registered and not currently in a running game
+        if playerIsRegistered(dealerName) and not playerInActiveGame(dealerName):
+            #The dealerName IS registered and the player/dealer is NOT already in an active game
+            #Get the player via their name so we can 
+
+
+    #PLACEHOLDER
+            print('placeholder')
+
+        #Make a tuple of the players and pass them into the runningGames list
+        #Select players from the "registeredPlayers" list at random...
+        
+        #Check that:  1 < <n> <= 3
+
 
 
     #Query Games
@@ -320,7 +361,7 @@ while True:
 
         #Parse all the Registered Players/Tuples so their info can be printed
         for game in runningGames:
-            queryMessage += f"\n  [\"{player[0]}\", {player[1]}, {player[2]}, {player[3]}, {player[4]}]"
+            queryMessage += f"\n []"
 
         #Send the query of players to the requesting client/current client
         sendClientMessage(currentClientAddress, queryMessage)

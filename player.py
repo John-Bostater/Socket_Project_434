@@ -26,11 +26,11 @@
 
 #Relevant Libaries
 #-----------------
-import threading
 import socket
-
-#NEW!!
 import sys
+
+#Unused...
+import threading
 #-----------------
 
 
@@ -57,7 +57,7 @@ def sendServerMessage(message):
     playerSocket.sendto(message.encode('utf-8'), serverAddress)
 
 
-#Receive a Message/Response from the Server
+#Receive a Message/Response from the Server on the specified port?
 def receiveMessage():
     #DEBUG
     print("Place holder")
@@ -93,17 +93,6 @@ def displayPlayerGuide():
     #Start the game, this command will make the current Player become the dealer
     print("****************************************************************************************")
     print("{Command Space}")
-
-
-def enterPlayerSock():
-    #If the user has not already defined their ipv4 address and port # in the argv[]
-    #This function will be called upon to collect that information...
-    return 0
-
-    #Enter the Client's Unique Port Number {Give the Specified range}
-
-
-
 #-------------------------------------------------------------------------------------
 
 
