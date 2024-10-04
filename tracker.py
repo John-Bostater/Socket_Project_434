@@ -234,14 +234,14 @@ def playerIsRegistered(playerName):
 
 #returns T/F as to whether the player of 'playerName' is in an active game or not
 def playerInActiveGame(playerName):
-    #Parse the runningGames tuples and look f
-    for player in registeredPlayers:
-        #If the registered player's name matches that of the playerName parameter
+    #Parse the runningGames tuples and look for a matching name
+    for player in runningGames:
+        #If the player of "playerName" is in an active game, return True
         if player[0] == playerName:
             #playerName IS registered
             return True
     
-    #Else, return's false (playerName is NOT registered)
+    #Else, return's false (playerName is NOT in an active game)
     return False
 #-------------------------------------------------------------------------------------
 
@@ -314,7 +314,7 @@ while True:
 
 
 #LEFT OFF HERE:  10/1/24
-#[toDo]:
+#[ToDo]:
     #Test to see if we are collecting 'dealerName' correctly
     
     #Collect <n> from the 'clientRequest' string
@@ -323,11 +323,25 @@ while True:
     #Start Game
     elif clientRequest.find("start game") != -1:
         #Collect the parameters of the 'start game' command
-        dealerName = clientRequest[11:]
-        dealerName = dealerName[:dealerName.find(' ')]
+
+        #Name of the dealer
+        cutString = clientRequest[11:]      #Contains: <dealerName> <n> <#holes>
+        dealerName = cutString[:cutString.find(' ')]
         
+
+        #n (Number of players)
+        cutString = cutString[(cutString.find(' ')+1):]
+        numberOfPlayers = cutString[:cutString.find(' ')]
+        #Convert the number of players into a decimal type for later...
+        numberOfPlayers = int(numberOfPlayers)
+
+
+        #Number of Holes
+        numberOfHoles = cutString[(cutString.find('')+1):]
+
+
     #DEBUG!!
-        print('Entered Dealer Name:', dealerName)
+        print('Extracted Details:', dealerName, str(numberOfPlayers), numberOfHoles)
 
         #Collect <n> number of players for the game 
         # 
@@ -338,6 +352,7 @@ while True:
         #   playerInActiveGame(player[0])
 
 
+#STATUS: Working!
         #Check that the player is registered and not currently in a running game
         if playerIsRegistered(dealerName) and not playerInActiveGame(dealerName):
             #The dealerName IS registered and the player/dealer is NOT already in an active game
