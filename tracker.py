@@ -333,11 +333,20 @@ while True:
         cutString = cutString[(cutString.find(' ')+1):]
         numberOfPlayers = cutString[:cutString.find(' ')]
         #Convert the number of players into a decimal type for later...
-        numberOfPlayers = int(numberOfPlayers)
+        checkMe = int(numberOfPlayers)
+
+    #DEBUG!!
+        print('Check me: \''+str(checkMe)+'\'')
+
+        if not checkMe >= 32:
+            print('wtf!!')
 
 
         #break and send the client a message if their number of players is outside the range
-        if not numberOfPlayers >= 2 and not numberOfPlayers <= 4:
+        if 2 > checkMe or checkMe > 4:
+            #DEBUG!!
+            print('we Made it!!')
+
             #Send FAILURE message to the Client
             sendClientMessage(currentClientAddress, "FAILURE")
 
@@ -346,11 +355,11 @@ while True:
 
 
         #Number of Holes
-        numberOfHoles = cutString[(cutString.find('')+1):]
+        numberOfHoles = cutString[(cutString.find(' ')+1):]
 
 
 #DEBUG!!
-        print('Extracted Details:', dealerName, str(numberOfPlayers), numberOfHoles)
+        print('Extracted Details:', dealerName, numberOfPlayers, numberOfHoles)
 
         #Collect <n> number of players for the game 
         # 
