@@ -336,11 +336,20 @@ while True:
         numberOfPlayers = int(numberOfPlayers)
 
 
+        #break and send the client a message if their number of players is outside the range
+        if not numberOfPlayers >= 2 and not numberOfPlayers <= 4:
+            #Send FAILURE message to the Client
+            sendClientMessage(currentClientAddress, "FAILURE")
+
+
+        #Else, the number of registered players to be selected at random is:   2 <= x <= 4
+
+
         #Number of Holes
         numberOfHoles = cutString[(cutString.find('')+1):]
 
 
-    #DEBUG!!
+#DEBUG!!
         print('Extracted Details:', dealerName, str(numberOfPlayers), numberOfHoles)
 
         #Collect <n> number of players for the game 
@@ -353,10 +362,12 @@ while True:
 
 
 #STATUS: Working!
-        #Check that the player is registered and not currently in a running game
+        #Check that the dealer/player is registered and not currently in a running game
         if playerIsRegistered(dealerName) and not playerInActiveGame(dealerName):
             #The dealerName IS registered and the player/dealer is NOT already in an active game
             #Get the player via their name so we can 
+
+
 
 
     #PLACEHOLDER
