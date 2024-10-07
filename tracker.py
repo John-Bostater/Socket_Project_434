@@ -74,7 +74,7 @@ cardDeck = [
 
 
 #Games in Progress
-runningGames = []
+activeGames = []
 
 
 #Registered Players
@@ -87,17 +87,37 @@ currentClientAddress = 0
 
 
 
-#Server-Client Functions
-#---------------------------
+#Messaging functions
+#-----------------------------------------------------------------------------------------
 
 #Take a single argv statement! 
 # python3 tracker.py <IPv4Address>
 
-#Send Message to Client (Player)
+#[Server --> Player]
+#{Communication Port}: t-port
+
+#Send Message to Client (Player) based on their address tuple: (IPv4, Port#)
 def sendClientMessage(clientAddress, message):
     #Send a customized message back to the Client via their address tuple: (IPv4, Port#)
     serverSocket.sendto(message.encode('utf-8'), clientAddress)
-#---------------------------
+
+
+#[Server --> Player]
+#{Communication Port}: t-port
+#
+#Send Message to Registered Player via their name
+def sendRegisteredPlayerMessage(registeredPlayerName, message):
+    
+    #Parse the registeredPlayers list and send a message to the player via their name
+    for player in registeredPlayers:
+        #We have found the player we want to send the message to
+        if player[0] == registeredPlayerName:        
+            #Tuple that contains the player's IPv4 and t-port
+            registeredAddress = (player[1], int(player[2]))
+
+            #Send the client a message using our other function
+            sendClientMessage(registeredAddress, message)
+#-----------------------------------------------------------------------------------------
 
 
 
@@ -149,24 +169,17 @@ def registerPlayer(playerInfo):
     p_port = playerInfo
     #Port for Communication between Player and Player
 
-    #Dealer Flag 
-    dealerFlag = False
-
-    #Active Game Flag
-
-
+    
     #Complete the player tuple and add it to the registered players list
-    newPlayer = (playerName, ipAddress, t_port, p_port, dealerFlag)
+    newPlayer = (playerName, ipAddress, t_port, p_port, False, False)
+        #isDealer = False, inActiveGame = False
 
 
     #Add the player-tuple to the queued player list
     registeredPlayers.append(newPlayer)
 
-
     #Send a message back to the client, "SUCCESS"
     sendClientMessage(currentClientAddress, "SUCCESS")
-
-    return 'SUCCESS'
 
 
 
@@ -237,8 +250,8 @@ def playerIsRegistered(playerName):
 
 #returns T/F as to whether the player of 'playerName' is in an active game or not
 def playerInActiveGame(playerName):
-    #Parse the runningGames tuples and look for a matching name
-    for player in runningGames:
+    #Parse the activeGames tuples and look for a matching name
+    for player in activeGames:
         #If the player of "playerName" is in an active game, return True
         if player[0] == playerName:
             #playerName IS registered
@@ -328,6 +341,11 @@ while True:
         cutString = clientRequest[11:]      #Contains: <dealerName> <n> <#holes>
         dealerName = cutString[:cutString.find(' ')]
         
+#DEBUG!!
+        print("Sending the dealer a message via new command!!")
+        sendRegisteredPlayerMessage(dealerName, "Yes ma'am")
+
+
 
         #n (Number of players)
         cutString = cutString[(cutString.find(' ')+1):]
@@ -345,32 +363,47 @@ while True:
 
         #Number of Players falls within the appropriate range:  2 <= x <= 4
         #Number og Holes falls within the appropriate range: 1 <= y <= 9
-        if playerIsRegistered(dealerName) and not playerInActiveGame(dealerName) and numberOfPlayers >= 2 and numberOfPlayers <= 4 and numberOfHoles >= 1 and numberOfHoles <= 9:
-            #Create a tuple for the game
-            
-            
+        if playerIsRegistered(dealerName) and not playerInActiveGame(dealerName) and numberOfPlayers >= 2 and numberOfPlayers <= 4 and numberOfHoles >= 1 and numberOfHoles <= 9: 
             #Change the dealer player's flags:   
             #       player[3] --> {dealerFlag}     player[4] --> {inGameFlag} 
             for player in registeredPlayers:
                 #We have found the coinciding dealer's tuple which we will modify
                 if player[0] == dealerName:
-                    #Update the dealer's flags
-                    player[3] = True    #isDealer
-                    player[4] = True    #inActiveGame
+                    #Update the Dealer's flags and replace the tuple with the new one
+                    updatedPlayer = (player[0], player[1], player[2], True, True)
+                    
+                    #Update the player's tuple
+                    player = updatedPlayer
+
+                    #CHECK!!
 
 
-            #Pick <n> more random players from the 'registeredPlayers' array that we will
+
+            #Pick <n> more random players from the 'registeredPlayers' array that we will add to the (gameTuple)
+
+            #When picking the random player also inform them that they have been added to a new game!!
+
+
+
+            #Tuple for the new Game (will be added to 'activeGames' list)
+            #newGame = <gameIdentifier>, <dealerName>, <otherPlayersList[]>)
+            #newGame = ((len(activeGames)+1), dealerName, <otherPlayersList[]>)
 
 
 
 #DEBUG!!
             print('we Made it!!', numberOfPlayers, numberOfHoles)
 
+
+#KEEP!!
+            #Inform dealer of success
+            sendClientMessage(currentClientAddress, "SUCCESS")
+
+
             #Game successfully started, inform all Clients that have been added to the game
 
+                #Parse the list of players in the game {index [2] of the new game tuple}
 
-            #Inform the dealer of their
-            sendClientMessage(currentClientAddress, "SUCCESS")
 
         #
         else:
@@ -388,10 +421,10 @@ while True:
     #Query Games
     elif clientRequest.find("query games") != -1:
         #Message of the Player Query
-        queryMessage = '\n[Number of Ongoing Games]: ' + str(len(runningGames))
+        queryMessage = '\n[Number of Ongoing Games]: ' + str(len(activeGames))
 
         #Parse all the Registered Players/Tuples so their info can be printed
-        for game in runningGames:
+        for game in activeGames:
             queryMessage += f"\n [{game[0]}"
 
             #For-loop that will add all of the players names to the query message

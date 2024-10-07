@@ -10,6 +10,10 @@
 
     This Python script contains code for the Player to interact with the server and Join ongoing games
 
+    Once a game has been started by a player, a message will be sent to all Players of the game that will
+    clear the menu and start listening on the   [p-port]    so that the player can interact with the game
+
+
 
 [Group 61 Port Number Range]: 
     31500   to   31999    
