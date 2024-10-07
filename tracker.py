@@ -14,7 +14,15 @@
     This Server contains a fixed IP address and Port Number that the Player's/Player objects
     will use for sending and receiving information about the game.
 
+
+    - [Registered Player Tuple]:
     
+        ["Name", t-port, p-port, dealerFlag, inGameFlag]
+
+        {player[0]}                          {player[4]}
+    
+        
+
 [Group 61 Port Number Range]: 
     31500   to   31999
 
@@ -144,6 +152,8 @@ def registerPlayer(playerInfo):
     #Dealer Flag 
     dealerFlag = False
 
+    #Active Game Flag
+
 
     #Complete the player tuple and add it to the registered players list
     newPlayer = (playerName, ipAddress, t_port, p_port, dealerFlag)
@@ -156,15 +166,8 @@ def registerPlayer(playerInfo):
     #Send a message back to the client, "SUCCESS"
     sendClientMessage(currentClientAddress, "SUCCESS")
 
-
     return 'SUCCESS'
 
-
-#Remove Player
-def de_RegisterPlayer(selectedPlayer):
-    #This function will remove the player from the game
-
-    return '0'
 
 
 #Deal Cards [Dealer Only]
@@ -191,7 +194,7 @@ def dealCards():
 #Reset Card Deck (Adds the missing cards back)
 def resetDeck():
     #Add the cards back to the deck/reset the deck
-    cardDeck = [
+    return [
         #Clubs
         "AC", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "10C", "JC", "QC", "KC",
 
@@ -313,11 +316,8 @@ while True:
         sendClientMessage(currentClientAddress, queryMessage)
 
 
-#LEFT OFF HERE:  10/1/24
+#LEFT OFF HERE:  10/6/24
 #[ToDo]:
-    #Test to see if we are collecting 'dealerName' correctly
-    
-    #Collect <n> from the 'clientRequest' string
 
 
     #Start Game
@@ -333,59 +333,55 @@ while True:
         cutString = cutString[(cutString.find(' ')+1):]
         numberOfPlayers = cutString[:cutString.find(' ')]
         #Convert the number of players into a decimal type for later...
-        checkMe = int(numberOfPlayers)
-
-    #DEBUG!!
-        print('Check me: \''+str(checkMe)+'\'')
-
-        if not checkMe >= 32:
-            print('wtf!!')
-
-
-        #break and send the client a message if their number of players is outside the range
-        if 2 > checkMe or checkMe > 4:
-            #DEBUG!!
-            print('we Made it!!')
-
-            #Send FAILURE message to the Client
-            sendClientMessage(currentClientAddress, "FAILURE")
-
-
-        #Else, the number of registered players to be selected at random is:   2 <= x <= 4
+        numberOfPlayers = int(numberOfPlayers)
 
 
         #Number of Holes
-        numberOfHoles = cutString[(cutString.find(' ')+1):]
+        numberOfHoles = int(cutString[(cutString.find(' ')+1):])
 
 
 #DEBUG!!
-        print('Extracted Details:', dealerName, numberOfPlayers, numberOfHoles)
+        print('Check me: \''+str(numberOfPlayers)+'\'')
+
+        #Number of Players falls within the appropriate range:  2 <= x <= 4
+        #Number og Holes falls within the appropriate range: 1 <= y <= 9
+        if playerIsRegistered(dealerName) and not playerInActiveGame(dealerName) and numberOfPlayers >= 2 and numberOfPlayers <= 4 and numberOfHoles >= 1 and numberOfHoles <= 9:
+            #Create a tuple for the game
+            
+            
+            #Change the dealer player's flags:   
+            #       player[3] --> {dealerFlag}     player[4] --> {inGameFlag} 
+            for player in registeredPlayers:
+                #We have found the coinciding dealer's tuple which we will modify
+                if player[0] == dealerName:
+                    #Update the dealer's flags
+                    player[3] = True    #isDealer
+                    player[4] = True    #inActiveGame
+
+
+            #Pick <n> more random players from the 'registeredPlayers' array that we will
+
+
+
+#DEBUG!!
+            print('we Made it!!', numberOfPlayers, numberOfHoles)
+
+            #Game successfully started, inform all Clients that have been added to the game
+
+
+            #Inform the dealer of their
+            sendClientMessage(currentClientAddress, "SUCCESS")
+
+        #
+        else:
+            #Player input is incorrect, send FAILURE message
+            sendClientMessage(currentClientAddress, "FAILURE")
+
 
         #Collect <n> number of players for the game 
         # 
         # (we will be selecting <n> random players from the 'registeredPlayers' list)
         #   Check that the player we are selecting at random is not already in a game via
-        
-        #for player in registeredPlayers:
-        #   playerInActiveGame(player[0])
-
-
-#STATUS: Working!
-        #Check that the dealer/player is registered and not currently in a running game
-        if playerIsRegistered(dealerName) and not playerInActiveGame(dealerName):
-            #The dealerName IS registered and the player/dealer is NOT already in an active game
-            #Get the player via their name so we can 
-
-
-
-
-    #PLACEHOLDER
-            print('placeholder')
-
-        #Make a tuple of the players and pass them into the runningGames list
-        #Select players from the "registeredPlayers" list at random...
-        
-        #Check that:  1 < <n> <= 3
 
 
 
@@ -396,7 +392,14 @@ while True:
 
         #Parse all the Registered Players/Tuples so their info can be printed
         for game in runningGames:
-            queryMessage += f"\n []"
+            queryMessage += f"\n [{game[0]}"
+
+            #For-loop that will add all of the players names to the query message
+            for i in (len(game) - 1):
+                queryMessage += f", {game[i]}"
+        
+        #Add the ending part of the query message
+        queryMessage += "]"
 
         #Send the query of players to the requesting client/current client
         sendClientMessage(currentClientAddress, queryMessage)
