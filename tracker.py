@@ -367,8 +367,8 @@ while True:
 
 
 #DEBUG!!
-        print("Sending the dealer a message via new command!!")
-        sendRegisteredPlayerMessage(dealerName, "Yes ma'am")
+        #print("Sending the dealer a message via new command!!")
+        #sendRegisteredPlayerMessage(dealerName, "Yes ma'am")
 
 
         #n (Number of players)
@@ -383,7 +383,7 @@ while True:
 
 
 #DEBUG!!
-        print('Check me: \''+str(numberOfPlayers)+'\'')
+        #print('Check me: \''+str(numberOfPlayers)+'\'')
 
         #Number of Players falls within the appropriate range:  2 <= x <= 4
         #Number og Holes falls within the appropriate range: 1 <= y <= 9
@@ -405,27 +405,20 @@ while True:
                     #Break the loop                    
                     break
 
-            #Update the player's tuple??
+
+            #Update the dealer's tuple, isDealer[3] = True, inActiveGame[4] = True
             registeredPlayers[i] = updatedPlayer
-
-            #TRY THIS!!
-                #player = updatedPlayer
-
-#DEBUG CHECK!!, see if the Dealers flags have been updated
-           # showRegPlayers()
-
-
-    #DEBUG!!
-          #  print("Here??!?!?!")
 
 
             #List that will hold all of the players
+            otherPlayers = []
 
 
             #Pick <n> more random players from the 'registeredPlayers' array that we will add to the (gameTuple)
             #Inform the randomly picked player that they have been added to a new game 
             #   via: sendRegisteredPlayerMessage
-            
+            for player in registeredPlayers:
+                #
 
 
             #Tuple for the new Game (will be added to 'activeGames' list)
