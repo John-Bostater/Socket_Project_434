@@ -40,7 +40,7 @@ import sys
 
 
 #Global Variables
-#----------------------------
+#--------------------------------------------------------------
 #Tuple containing Player's entered IPv4 Address and Port Number
 #[Example]: playerAddress = ("128.110.223.3", 31501)
 playerAddress = (0,0)
@@ -49,7 +49,17 @@ playerAddress = (0,0)
 #Server's Socket, IPv4 & Port Number
 #serverAddress = ("128.110.223.4", 31500)
 serverAddress = (0,0)
-#----------------------------
+
+
+
+#NEW!!!
+#
+#Hold the player's t-port   [Communicate with tracker.py]
+#t-port = 0
+
+#Hold the player's p-port   [Communicate with other players in-game]
+#p-port = 0
+#--------------------------------------------------------------
 
 
 

@@ -389,13 +389,13 @@ while True:
         #Number og Holes falls within the appropriate range: 1 <= y <= 9
         if playerIsRegistered(dealerName) and not playerInActiveGame(dealerName) and numberOfPlayers >= 2 and numberOfPlayers <= 4 and numberOfHoles >= 1 and numberOfHoles <= 9 and numberOfPlayers <= (len(registeredPlayers) - numPlayersInActiveGame()): 
             #Index variable
-            i = 0
+            dealerIndex = 0
             
             #Change the dealer player's flags:   
             #       player[3] --> {dealerFlag}     player[4] --> {inGameFlag} 
             for player in registeredPlayers:
                 #Increment the index (there is probably a way to do this with less syntax....)
-                i += 1
+                dealerIndex += 1
                 
                 #We have found the coinciding dealer's tuple which we will modify
                 if player[0] == dealerName:
@@ -407,18 +407,48 @@ while True:
 
 
             #Update the dealer's tuple, isDealer[3] = True, inActiveGame[4] = True
-            registeredPlayers[i] = updatedPlayer
-
+            registeredPlayers[dealerIndex] = updatedPlayer
 
             #List that will hold all of the players
             otherPlayers = []
+
+            #Break while-loop once 'numberOfPlayers - 1' players is added
+            # 
+            #Players to be added variable
+            addedPlayers = 0
 
 
             #Pick <n> more random players from the 'registeredPlayers' array that we will add to the (gameTuple)
             #Inform the randomly picked player that they have been added to a new game 
             #   via: sendRegisteredPlayerMessage
-            for player in registeredPlayers:
-                #
+            while True:
+                #Generate a random number of the player to be picked via their index # from registeredPlayers list
+                randPlayerIndex = random.randint(0, len(registeredPlayers))
+
+                #If the selected player is not already in a game add them to the list 'otherPlayers'
+                if registeredPlayers[randPlayerIndex][4] != True:
+                    #Increment the break counter
+                    addedPlayers += 1
+
+                    #Update the player's flag, inActiveGame = True  {registeredPlayers[4]}
+                    updatedPlayer = (registeredPlayers[randPlayerIndex][0], registeredPlayers[randPlayerIndex][2], False, True)
+                    #Update the players tuple
+                    registeredPlayers[randPlayerIndex] = updatedPlayer
+
+                    #Add the player to the list 'otherPlayers'
+                    otherPlayers.append(registeredPlayers[randPlayerIndex])
+
+
+#Send a SPECIAL_MESSAGE to the player that 'player.py' will process specially upon receiving from the server
+
+
+
+                    #Break the while-loop once sufficient number of players added
+                    if addedPlayers == (numberOfPlayers - 1):
+                        #
+
+                        #Break
+                        break
 
 
             #Tuple for the new Game (will be added to 'activeGames' list)
