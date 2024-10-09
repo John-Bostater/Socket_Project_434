@@ -17,9 +17,9 @@
 
     - [Registered Player Tuple]:
     
-        ["Name", t-port, p-port, dealerFlag, inGameFlag]
+        ["Name", IPv4, t-port, p-port, dealerFlag, inGameFlag]
 
-        {player[0]}                          {player[4]}
+        {player[0]}                                 {player[5]}
     
         
 
@@ -37,6 +37,13 @@
 
 [Gameplay/Experiment]:
     //Text here...
+
+
+
+[TO DO]:
+    {10/9/24}
+
+    - 
 """
 
 
@@ -281,7 +288,7 @@ def numPlayersInActiveGame():
 #-------------------------------------------------------------------------------------
 def showRegPlayers():
     for player in registeredPlayers:
-        print(f"{player[0]}, {player[1]}, {player[2]}, {player[3]}, {player[4]}")
+        print(f"{player[0]}, {player[1]}, {player[2]}, {player[3]}, {player[4]}, {player[5]}")
 #-------------------------------------------------------------------------------------
 
 
@@ -344,7 +351,7 @@ while True:
         if len(registeredPlayers) > 0:
             #Parse all the Registered Players/Tuples so their info can be printed
             for player in registeredPlayers:
-                queryMessage += f"\n  [\"{player[0]}\", {player[1]}, {player[2]}, {player[3]}, {player[4]}]"
+                queryMessage += f"\n  [\"{player[0]}\", {player[1]}, {player[2]}, {player[3]}, {player[4]}, {player[5]}]"
         else:
             #Show empty list
             queryMessage += '\n  []'
@@ -390,20 +397,31 @@ while True:
         if playerIsRegistered(dealerName) and not playerInActiveGame(dealerName) and numberOfPlayers >= 2 and numberOfPlayers <= 4 and numberOfHoles >= 1 and numberOfHoles <= 9 and numberOfPlayers <= (len(registeredPlayers) - numPlayersInActiveGame()): 
             #Index variable
             dealerIndex = 0
-            
+
+           
+#DEBUG!!
+#            showRegPlayers()
+
+
             #Change the dealer player's flags:   
             #       player[3] --> {dealerFlag}     player[4] --> {inGameFlag} 
             for player in registeredPlayers:
-                #Increment the index (there is probably a way to do this with less syntax....)
-                dealerIndex += 1
-                
+      
                 #We have found the coinciding dealer's tuple which we will modify
                 if player[0] == dealerName:
                     #Update the Dealer's flags and replace the tuple with the new one
-                    updatedPlayer = (player[0], player[1], player[2], True, True)
+                    updatedPlayer = (player[0], player[1], player[2], player[3], True, True)
+            
+#DEBUG!!
+#                    print('Update Player!!:!!')
+
 
                     #Break the loop                    
                     break
+        #NEW!!!
+                else:
+                    #Increment the index (there is probably a way to do this with less syntax....)
+                    dealerIndex += 1
 
 
             #Update the dealer's tuple, isDealer[3] = True, inActiveGame[4] = True
@@ -417,21 +435,29 @@ while True:
             #Players to be added variable
             addedPlayers = 0
 
+#DEBUG!!
+            #showRegPlayers()
+
+
 
             #Pick <n> more random players from the 'registeredPlayers' array that we will add to the (gameTuple)
             #Inform the randomly picked player that they have been added to a new game 
             #   via: sendRegisteredPlayerMessage
             while True:
                 #Generate a random number of the player to be picked via their index # from registeredPlayers list
-                randPlayerIndex = random.randint(0, len(registeredPlayers))
+                randPlayerIndex = random.randint(0, len(registeredPlayers)-1)
+
+#DEBUG!!
+                #print('randPlayerindex:', randPlayerIndex)
+
 
                 #If the selected player is not already in a game add them to the list 'otherPlayers'
-                if registeredPlayers[randPlayerIndex][4] != True:
+                if registeredPlayers[randPlayerIndex][5] != True:
                     #Increment the break counter
                     addedPlayers += 1
 
                     #Update the player's flag, inActiveGame = True  {registeredPlayers[4]}
-                    updatedPlayer = (registeredPlayers[randPlayerIndex][0], registeredPlayers[randPlayerIndex][2], False, True)
+                    updatedPlayer = (registeredPlayers[randPlayerIndex][0], registeredPlayers[randPlayerIndex][1], registeredPlayers[randPlayerIndex][2], registeredPlayers[randPlayerIndex][3], False, True)
                     #Update the players tuple
                     registeredPlayers[randPlayerIndex] = updatedPlayer
 
@@ -439,18 +465,25 @@ while True:
                     otherPlayers.append(registeredPlayers[randPlayerIndex])
 
 
+#[TODO]
 #Send a SPECIAL_MESSAGE to the player that 'player.py' will process specially upon receiving from the server
 
 
 
-                    #Break the while-loop once sufficient number of players added
+                    #Sufficient number of players added
                     if addedPlayers == (numberOfPlayers - 1):
-                        #
+#DEBUG!!!
+                        #print('Sufficient number of players added to list!!')
+                        #showRegPlayers()
 
-                        #Break
+                #DEBUG!!
+                        #print('randPlayerindex:', randPlayerIndex)
+
+
+                        #Break the while-loop
                         break
 
-
+#[TODO]
             #Tuple for the new Game (will be added to 'activeGames' list)
             #newGame = <gameIdentifier>, <dealerName>, <otherPlayersList[]>)
             #newGame = ((len(activeGames)+1), dealerName, otherPlayers)
@@ -464,17 +497,11 @@ while True:
             #Inform dealer of success
             sendClientMessage(currentClientAddress, "SUCCESS")
 
-
+#KEEP!
         else:
             #Player input is incorrect, send FAILURE message
             sendClientMessage(currentClientAddress, "FAILURE")
-
-
-        #Collect <n> number of players for the game 
-        # 
-        # (we will be selecting <n> random players from the 'registeredPlayers' list)
-        #   Check that the player we are selecting at random is not already in a game via
-
+            
 
 
     #Query Games
