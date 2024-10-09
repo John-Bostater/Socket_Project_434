@@ -364,11 +364,11 @@ while True:
         #Name of the dealer
         cutString = clientRequest[11:]      #Contains: <dealerName> <n> <#holes>
         dealerName = cutString[:cutString.find(' ')]
-        
+
+
 #DEBUG!!
         print("Sending the dealer a message via new command!!")
         sendRegisteredPlayerMessage(dealerName, "Yes ma'am")
-
 
 
         #n (Number of players)
@@ -388,19 +388,35 @@ while True:
         #Number of Players falls within the appropriate range:  2 <= x <= 4
         #Number og Holes falls within the appropriate range: 1 <= y <= 9
         if playerIsRegistered(dealerName) and not playerInActiveGame(dealerName) and numberOfPlayers >= 2 and numberOfPlayers <= 4 and numberOfHoles >= 1 and numberOfHoles <= 9 and numberOfPlayers <= (len(registeredPlayers) - numPlayersInActiveGame()): 
+            #Index variable
+            i = 0
+            
             #Change the dealer player's flags:   
             #       player[3] --> {dealerFlag}     player[4] --> {inGameFlag} 
             for player in registeredPlayers:
+                #Increment the index (there is probably a way to do this with less syntax....)
+                i += 1
+                
                 #We have found the coinciding dealer's tuple which we will modify
                 if player[0] == dealerName:
                     #Update the Dealer's flags and replace the tuple with the new one
                     updatedPlayer = (player[0], player[1], player[2], True, True)
-                    
-                    #Update the player's tuple??
-                    player = updatedPlayer
+
+                    #Break the loop                    
+                    break
+
+            #Update the player's tuple??
+            registeredPlayers[i] = updatedPlayer
+
+            #TRY THIS!!
+                #player = updatedPlayer
 
 #DEBUG CHECK!!, see if the Dealers flags have been updated
-                    showRegPlayers()
+           # showRegPlayers()
+
+
+    #DEBUG!!
+          #  print("Here??!?!?!")
 
 
             #List that will hold all of the players
@@ -418,7 +434,7 @@ while True:
             
 
 #DEBUG!!
-            print('we Made it!!', numberOfPlayers, numberOfHoles)
+            #print('we Made it!!', numberOfPlayers, numberOfHoles)
 
 
 #KEEP!!
