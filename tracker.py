@@ -259,7 +259,31 @@ def playerInActiveGame(playerName):
     
     #Else, return's false (playerName is NOT in an active game)
     return False
+
+
+#Return the number of players NOT in an active game
+def numPlayersInActiveGame():
+    #Variable to hold the total number of registered players in an active game
+    numberOfActivePlayers = 0
+
+    #Parse the 'registeredPlayers' array and check for the 
+    for player in registeredPlayers:
+        if player[3] == True:
+            #Increment the counter of players in an active game
+            numberOfActivePlayers += 1
+
+    #Return the number of players actively in a game
+    return numberOfActivePlayers
 #-------------------------------------------------------------------------------------
+
+
+#DEBUG FUNCTIONS
+#-------------------------------------------------------------------------------------
+def showRegPlayers():
+    for player in registeredPlayers:
+        print(f"{player[0]}, {player[1]}, {player[2]}, {player[3]}, {player[4]}")
+#-------------------------------------------------------------------------------------
+
 
 
 
@@ -269,7 +293,7 @@ def playerInActiveGame(playerName):
 
 #Check if the user has added IPv4 in their command line argument
 if len(sys.argv) == 2:
-    #Update the Server's address to contain 
+    #Update the Server's address to contain
     serverAddress = (sys.argv[1], serverPort)
 else:
     #Make the user input the servers IPv4 manually
@@ -363,7 +387,7 @@ while True:
 
         #Number of Players falls within the appropriate range:  2 <= x <= 4
         #Number og Holes falls within the appropriate range: 1 <= y <= 9
-        if playerIsRegistered(dealerName) and not playerInActiveGame(dealerName) and numberOfPlayers >= 2 and numberOfPlayers <= 4 and numberOfHoles >= 1 and numberOfHoles <= 9: 
+        if playerIsRegistered(dealerName) and not playerInActiveGame(dealerName) and numberOfPlayers >= 2 and numberOfPlayers <= 4 and numberOfHoles >= 1 and numberOfHoles <= 9 and numberOfPlayers <= (len(registeredPlayers) - numPlayersInActiveGame()): 
             #Change the dealer player's flags:   
             #       player[3] --> {dealerFlag}     player[4] --> {inGameFlag} 
             for player in registeredPlayers:
@@ -372,24 +396,26 @@ while True:
                     #Update the Dealer's flags and replace the tuple with the new one
                     updatedPlayer = (player[0], player[1], player[2], True, True)
                     
-                    #Update the player's tuple
+                    #Update the player's tuple??
                     player = updatedPlayer
 
-                    #CHECK!!
+#DEBUG CHECK!!, see if the Dealers flags have been updated
+                    showRegPlayers()
 
+
+            #List that will hold all of the players
 
 
             #Pick <n> more random players from the 'registeredPlayers' array that we will add to the (gameTuple)
-
-            #When picking the random player also inform them that they have been added to a new game!!
-
+            #Inform the randomly picked player that they have been added to a new game 
+            #   via: sendRegisteredPlayerMessage
+            
 
 
             #Tuple for the new Game (will be added to 'activeGames' list)
             #newGame = <gameIdentifier>, <dealerName>, <otherPlayersList[]>)
-            #newGame = ((len(activeGames)+1), dealerName, <otherPlayersList[]>)
-
-
+            #newGame = ((len(activeGames)+1), dealerName, otherPlayers)
+            
 
 #DEBUG!!
             print('we Made it!!', numberOfPlayers, numberOfHoles)
@@ -400,12 +426,6 @@ while True:
             sendClientMessage(currentClientAddress, "SUCCESS")
 
 
-            #Game successfully started, inform all Clients that have been added to the game
-
-                #Parse the list of players in the game {index [2] of the new game tuple}
-
-
-        #
         else:
             #Player input is incorrect, send FAILURE message
             sendClientMessage(currentClientAddress, "FAILURE")

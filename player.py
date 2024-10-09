@@ -11,7 +11,8 @@
     This Python script contains code for the Player to interact with the server and Join ongoing games
 
     Once a game has been started by a player, a message will be sent to all Players of the game that will
-    clear the menu and start listening on the   [p-port]    so that the player can interact with the game
+    clear the menu via a system command and start listening on the:      [p-port]    
+    this is so that the player can interact with the game
 
 
 
@@ -153,6 +154,17 @@ while True:
 
     #Receive response from Server
     serverResponse, serverAddress = playerSocket.recvfrom(1024)
+
+
+
+
+#LEFT OFF:  [10/8/24]
+
+#NEW!!!     [10/8/24]
+    #
+    #If the server response matches the "game started" code the player's command terminal will be cleared
+    #The user will then witness a new menu of the current players in the game, score, deck, and other relevant information
+
 
     #Print the server's response
     print(f"Server Response: {serverResponse.decode('utf-8')}")
