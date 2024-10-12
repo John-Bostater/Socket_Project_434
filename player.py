@@ -26,6 +26,10 @@
     OR
 
     python3 player.py <Client IPv4 Address> <Client Port Number> <Server IPv4 Address> <Server Port Number>
+
+    OR
+
+    python3 player.py     
 """
 
 
@@ -34,8 +38,9 @@
 import socket
 import sys
 
-#Unused...
-#import threading
+#NEW!!
+import os
+  #Used for clearing terminal and quick usage
 #-----------------
 
 
@@ -165,7 +170,8 @@ while True:
     #Receive response from Server
     serverResponse, serverAddress = playerSocket.recvfrom(1024)
 
-
+    #stringResponse
+    stringResponse = str(serverResponse)
 
 
 #LEFT OFF:  [10/8/24]
@@ -174,6 +180,10 @@ while True:
     #
     #If the server response matches the "game started" code the player's command terminal will be cleared
     #The user will then witness a new menu of the current players in the game, score, deck, and other relevant information
+    #Include commands 
+    if stringResponse.find("game started: ") != -1:
+#Placeholder
+        print("Placeholder")
 
 
     #Print the server's response

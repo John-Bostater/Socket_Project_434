@@ -32,18 +32,26 @@
     
     OR
 
-    python3 tracker.py <Server IPv4 Address> <Server Port Number>
+    python3 tracker.py <Server IPv4 Address>
+        
+        //Port number is statically defined in py script
+
+    OR
+
+    python3 tracker.py automatic-set
+        
+        //This will get the user's IPv4 from eth0 so the user does not have to manually write it out
 
 
 [Gameplay/Experiment]:
     //Text here...
 
 
-
 [TO DO]:
-    {10/9/24}
+    {10/11/24}
 
-    - 
+    - USE MULTITHREADING FOR STARTING NEW GAMES, BECAUSE WE WILL HAVE MULTIPLE GAMES RUNNING AT ONCE, OMG!!!
+
 """
 
 
@@ -439,7 +447,6 @@ while True:
             #showRegPlayers()
 
 
-
             #Pick <n> more random players from the 'registeredPlayers' array that we will add to the (gameTuple)
             #Inform the randomly picked player that they have been added to a new game 
             #   via: sendRegisteredPlayerMessage
@@ -464,43 +471,42 @@ while True:
                     #Add the player to the list 'otherPlayers'
                     otherPlayers.append(registeredPlayers[randPlayerIndex])
 
+                    #Message to be sent
+                    gameMessage = "game started: "
+
+                    #Send a special message to the player.. starting a game on the players end
+                    sendRegisteredPlayerMessage(registeredPlayers[randPlayerIndex][0], gameMessage)
+
+
 
 #[TODO]
 #Send a SPECIAL_MESSAGE to the player that 'player.py' will process specially upon receiving from the server
 
 
-
-                    #Sufficient number of players added
-                    if addedPlayers == (numberOfPlayers - 1):
+                #Sufficient number of players added
+                if addedPlayers == (numberOfPlayers - 1):
 #DEBUG!!!
-                        #print('Sufficient number of players added to list!!')
-                        #showRegPlayers()
+                    #print('Sufficient number of players added to list!!')
+                    #showRegPlayers()
 
                 #DEBUG!!
-                        #print('randPlayerindex:', randPlayerIndex)
+                    #print('randPlayerindex:', randPlayerIndex)
 
 
-                        #Break the while-loop
-                        break
-
-#[TODO]
-            #Tuple for the new Game (will be added to 'activeGames' list)
-            #newGame = <gameIdentifier>, <dealerName>, <otherPlayersList[]>)
-            #newGame = ((len(activeGames)+1), dealerName, otherPlayers)
-            
 
 #DEBUG!!
             #print('we Made it!!', numberOfPlayers, numberOfHoles)
 
 
 #KEEP!!
-            #Inform dealer of success
-            sendClientMessage(currentClientAddress, "SUCCESS")
-
+                    #Inform dealer of success
+                    sendClientMessage(currentClientAddress, "SUCCESS")
+                    #Break the while-loop
+                    break
 #KEEP!
-        else:
-            #Player input is incorrect, send FAILURE message
-            sendClientMessage(currentClientAddress, "FAILURE")
+                else:
+                    #Player input is incorrect, send FAILURE message
+                        sendClientMessage(currentClientAddress, "FAILURE")
             
 
 
