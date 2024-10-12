@@ -1,4 +1,0 @@
-register John 128.110.223.1 31501 12345
-register Joey 128.110.223.34 31502 12345
-
-start game John 2 1
