@@ -12,10 +12,12 @@
 
     Once a game has been started by a player, a message will be sent to all Players of the game that will
     clear the menu via a system command and start listening on the:      [p-port]    
-    this is so that the player can interact with the game
+    This is so that the player can interact with the game.
 
+    The player/client script is able to both listen for messages from players and the server as well as send the via threading.
+    Once the player has decided to end their session with the script, they can initiate a clean exit from the server via the command: "exit"
 
-
+    
 [Group 61 Port Number Range]: 
     31500   to   31999    
 
@@ -39,6 +41,7 @@ import socket
 import sys
 
 #NEW!!
+import threading
 import os
   #Used for clearing terminal and quick usage
 #-----------------
@@ -56,8 +59,12 @@ playerAddress = (0,0)
 serverAddress = (0,0)
 
 
+#Game started flag (allows)
 
 #NEW!!!
+stringResponse = ""
+
+
 #
 #Hold the player's t-port   [Communicate with tracker.py]
 #t-port = 0
@@ -93,6 +100,7 @@ def closeConnection():
 
 #Functions
 #-------------------------------------------------------------------------------------------------------
+#Main/First Menu the player see's, this is for interacting with pre-game functions as seen below...
 def displayPlayerGuide():
     print("****************************************************************************************")
     print("*                                       Golf                                           *")
@@ -113,6 +121,50 @@ def displayPlayerGuide():
     #Start the game, this command will make the current Player become the dealer
     print("****************************************************************************************")
     print("{Command Space}")
+
+
+#Game Menu, Once a new game has started they player will see the following menu below
+def displayGame(gameId):
+    print("****************************************************************************************")
+    print("*                                   Live Game                                          *")
+    print("****************************************************************************************")
+    print("{Game Identifier}:", gameId + '\n')
+    #Print all of the players in the game
+
+
+
+#User's input
+def userInp():
+    while True:
+        #Send commands to the Server/tracker.py
+        sendServerMessage(str(input("\nCommand To Server: ")))
+
+
+#Print and handle server responses
+def servResp():
+    while True:
+        #Receive response from Server
+        serverResponse, serverAddress = playerSocket.recvfrom(1024)
+
+        #stringResponse
+        stringResponse = str(serverResponse)
+        
+
+       #Include commands 
+        if stringResponse.find("game started: ") != -1:
+            #Linux & Unix terminal clear
+            if str(os.name) != 'nt':
+                os.system("clear")
+            #Windows terminal clear
+            else:
+                os.system("cls")
+
+            #Collect the Game-Id of the user's game
+            gameIdentifier = stringResponse[stringResponse.find("game started: "):stringResponse.find("\n")]
+
+
+        #Print the server's response
+        print(f"Server Response: {serverResponse.decode('utf-8')}")    
 #-------------------------------------------------------------------------------------------------------
 
 
@@ -162,30 +214,74 @@ playerSocket.bind(playerAddress)
 displayPlayerGuide()
 
 
+
+#Threads
+thread0 = threading.Thread(target=userInp)
+thread1 = threading.Thread(target=servResp)
+
+#Start the threads
+thread0.start()
+thread1.start()
+
+
+#while True:
+    #End the threads 
+
+
+    #If the server response matches the "game started" code the player's command terminal will be cleared
+    #The user will then witness a new menu of the current players in the game, score, deck, and other relevant information
+ 
+
+    #While loop is still going, we will want an if-branch to run over and over again until the game is over or player quits
+    #if 
+
+    #Print the game details (live update!!)
+
+
+#-------------------------------------------------------------------------------
+
+
+
+
+
+
+
+#OLD!!
+#KEEP!!
 #Keep communication running between the Client and server
-while True:
+#while True:
+
     #User can start a game from here via the correct command, "start game", this will make the player running THIS SCRIPT the Dealer
-    sendServerMessage(str(input("\nCommand To Server: ")))
+ #   sendServerMessage(str(input("\nCommand To Server: ")))
 
     #Receive response from Server
-    serverResponse, serverAddress = playerSocket.recvfrom(1024)
+  #  serverResponse, serverAddress = playerSocket.recvfrom(1024)
 
     #stringResponse
-    stringResponse = str(serverResponse)
+   # stringResponse = str(serverResponse)
 
 
-#LEFT OFF:  [10/8/24]
-
-#NEW!!!     [10/8/24]
-    #
     #If the server response matches the "game started" code the player's command terminal will be cleared
     #The user will then witness a new menu of the current players in the game, score, deck, and other relevant information
     #Include commands 
-    if stringResponse.find("game started: ") != -1:
-#Placeholder
-        print("Placeholder")
+    #if stringResponse.find("game started: ") != -1:
+        #Linux & Unix terminal clear
+      #  if str(os.name) != 'nt':
+     #       os.system("clear")
+        #Windows terminal clear
+       # else:
+        #    os.system("cls")
+
+        #Collect the Game-Id of the user's game
+        #gameIdentifier = stringResponse[stringResponse.find("game started: "):stringResponse.find("\n")]
+
+
+    #While loop is still going, we will want an if-branch to run over and over again until the game is over or player quits
+    #if 
+
+    #Print the game details (live update!!)
 
 
     #Print the server's response
-    print(f"Server Response: {serverResponse.decode('utf-8')}")
+#    print(f"Server Response: {serverResponse.decode('utf-8')}")
 #-------------------------------------------------------------------------------

@@ -72,7 +72,7 @@ serverAddress = (0,0)
 #Static value
 serverPort = 31500
 
-#Main Card deck that the Dealer-Player will deal cards from
+#Card deck that the Dealer-Player will deal cards from
 cardDeck = [
     #Clubs
     "AC", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "10C", "JC", "QC", "KC",
@@ -406,10 +406,6 @@ while True:
             #Index variable
             dealerIndex = 0
 
-           
-#DEBUG!!
-#            showRegPlayers()
-
 
             #Change the dealer player's flags:   
             #       player[3] --> {dealerFlag}     player[4] --> {inGameFlag} 
@@ -419,14 +415,15 @@ while True:
                 if player[0] == dealerName:
                     #Update the Dealer's flags and replace the tuple with the new one
                     updatedPlayer = (player[0], player[1], player[2], player[3], True, True)
-            
-#DEBUG!!
-#                    print('Update Player!!:!!')
 
+#LEFT OFF: 10/12/24
+#NEW!!
+                    #Send the "game started" message to the dealer/player so their player.py script can react accordingly
+                    sendRegisteredPlayerMessage(dealerName, "game started: dealer\n")
 
                     #Break the loop                    
                     break
-        #NEW!!!
+                #Else...
                 else:
                     #Increment the index (there is probably a way to do this with less syntax....)
                     dealerIndex += 1
@@ -438,13 +435,11 @@ while True:
             #List that will hold all of the players
             otherPlayers = []
 
+
             #Break while-loop once 'numberOfPlayers - 1' players is added
             # 
             #Players to be added variable
             addedPlayers = 0
-
-#DEBUG!!
-            #showRegPlayers()
 
 
             #Pick <n> more random players from the 'registeredPlayers' array that we will add to the (gameTuple)
@@ -472,7 +467,8 @@ while True:
                     otherPlayers.append(registeredPlayers[randPlayerIndex])
 
                     #Message to be sent
-                    gameMessage = "game started: "
+                    gameMessage = "game started: player\n"
+
 
                     #Send a special message to the player.. starting a game on the players end
                     sendRegisteredPlayerMessage(registeredPlayers[randPlayerIndex][0], gameMessage)
@@ -485,20 +481,6 @@ while True:
 
                 #Sufficient number of players added
                 if addedPlayers == (numberOfPlayers - 1):
-#DEBUG!!!
-                    #print('Sufficient number of players added to list!!')
-                    #showRegPlayers()
-
-                #DEBUG!!
-                    #print('randPlayerindex:', randPlayerIndex)
-
-
-
-#DEBUG!!
-            #print('we Made it!!', numberOfPlayers, numberOfHoles)
-
-
-#KEEP!!
                     #Inform dealer of success
                     sendClientMessage(currentClientAddress, "SUCCESS")
                     #Break the while-loop
@@ -506,7 +488,7 @@ while True:
 #KEEP!
                 else:
                     #Player input is incorrect, send FAILURE message
-                        sendClientMessage(currentClientAddress, "FAILURE")
+                    sendClientMessage(currentClientAddress, "FAILURE")
             
 
 
@@ -522,6 +504,7 @@ while True:
             #For-loop that will add all of the players names to the query message
             for i in (len(game) - 1):
                 queryMessage += f", {game[i]}"
+
         
         #Add the ending part of the query message
         queryMessage += "]"
@@ -532,6 +515,14 @@ while True:
 
     #End Games
     elif clientRequest.find("end") != -1 and len(clientRequest) > 3:
+        print('PlaceHolder')
+
+
+
+#Thread testing space
+#DEBUG!!
+    #End Games
+    elif clientRequest.find("debug") != -1 and len(clientRequest) > 3:
         print('PlaceHolder')
 
 
