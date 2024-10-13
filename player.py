@@ -59,11 +59,53 @@ serverAddress = (0,0)
 
 #Response converted to a string
 stringResponse = ""
+
+
+#New!!
+#Flag the allows the threads to run as well as stop them
+threadsRunning = False
 #--------------------------------------------------------------
 
 
 
-#Client Functions
+#Print Functions
+#-------------------------------------------------------------------------------------------------------
+#Main/First Menu the player see's, this is for interacting with pre-game functions as seen below...
+def displayPlayerGuide():
+    print("****************************************************************************************")
+    print("*                                       Golf                                           *")
+    print("****************************************************************************************")
+    #Client's Address
+    print("{Client Address}:", playerAddress, '\n')
+    #Register the player
+    print("  [Register Player]:                 register <Player Name> <IPv4> <t-port> <p-port>\n")   
+    #Returns number of players registered
+    print("  [Query Registered Players]:        query players\n")
+    print("  [Start Game]:                      start game <Card Dealer Player's Name> <n> <# holes>\n")     
+    #Return the # of ongoing games, with game-identifier and the current dealer's name of that game
+    print("  [Query Games]:                     query games\n") 
+    #End the specified game
+    print("  [End Games]:                       end <game-identifier> <Card Dealer Player's Name>\n")
+    print("  [DeRegister Player]:               de register <player>\n")
+    print("[Note]: Replace the parameters delimited by the chevrons with the relevant data")    
+    #Start the game, this command will make the current Player become the dealer
+    print("****************************************************************************************")
+    print("{Command Space}")
+    print("\nCommand to the Server: ", end="")
+
+
+#Game Menu, Once a new game has started they player will see the following menu below
+def displayGame(gameId):
+    print("****************************************************************************************")
+    print("*                                   Live Game                                          *")
+    print("****************************************************************************************")
+    print("{Game Identifier}:", gameId + '\n')
+    #Print all of the players in the game
+#-------------------------------------------------------------------------------------------------------
+
+
+
+#Client/Player Functions
 #-------------------------------------------------------------------------------------
 #Send a Message to the Server
 def sendServerMessage(message):
@@ -71,18 +113,22 @@ def sendServerMessage(message):
     playerSocket.sendto(message.encode('utf-8'), serverAddress)
 
 
+
+#LEFT OFF HERE!!!
+#Fix input to not have "command to server" as this will be a one time print of the menu
+
 #User's input
 def userInp():
     #Listen for the user's input until the exitFlag has been activated
-    while True:
+    while threadsRunning:
         #Send commands to the Server/tracker.py
-        sendServerMessage(str(input("\nCommand To Server: ")))
+        sendServerMessage(str(input()))
 
 
 #Print and handle server responses
 def servResp():
     #Listen for the server's response until the exitFlag has been activated
-    while True:
+    while threadsRunning:
         #Receive response from Server
         serverResponse, serverAddress = playerSocket.recvfrom(1024)
 
@@ -110,44 +156,8 @@ def servResp():
 
 
         #Print the server's response
-        print(f"Server Response: {serverResponse.decode('utf-8')}")    
+        print(f"\nServer Response: {serverResponse.decode('utf-8')}" + "\n\nCommand to the Server: ", end="")    
 #-------------------------------------------------------------------------------------
-
-
-
-#Functions
-#-------------------------------------------------------------------------------------------------------
-#Main/First Menu the player see's, this is for interacting with pre-game functions as seen below...
-def displayPlayerGuide():
-    print("****************************************************************************************")
-    print("*                                       Golf                                           *")
-    print("****************************************************************************************")
-    #Client's Address
-    print("{Client Address}:", playerAddress, '\n')
-    #Register the player
-    print("  [Register Player]:                 register <Player Name> <IPv4> <t-port> <p-port>\n")   
-    #Returns number of players registered
-    print("  [Query Registered Players]:        query players\n")
-    print("  [Start Game]:                      start game <Card Dealer Player's Name> <n> <# holes>\n")     
-    #Return the # of ongoing games, with game-identifier and the current dealer's name of that game
-    print("  [Query Games]:                     query games\n") 
-    #End the specified game
-    print("  [End Games]:                       end <game-identifier> <Card Dealer Player's Name>\n")
-    print("  [DeRegister Player]:               de register <player>\n")
-    print("[Note]: Replace the parameters delimited by the chevrons with the relevant data")    
-    #Start the game, this command will make the current Player become the dealer
-    print("****************************************************************************************")
-    print("{Command Space}")
-
-
-#Game Menu, Once a new game has started they player will see the following menu below
-def displayGame(gameId):
-    print("****************************************************************************************")
-    print("*                                   Live Game                                          *")
-    print("****************************************************************************************")
-    print("{Game Identifier}:", gameId + '\n')
-    #Print all of the players in the game
-#-------------------------------------------------------------------------------------------------------
 
 
 
@@ -204,12 +214,15 @@ displayPlayerGuide()
 userInputThread = threading.Thread(target=userInp)
 serverResponse = threading.Thread(target=servResp)
 
+#Update the flag so the threads can run indefinitely until prompted to stop
+threadsRunning = True
+
+
 #Start the threads
 userInputThread.start()
 serverResponse.start()
 
-
 #DEBUG!!!
 #Threads have been ended??
-print("Threads Ended!!")
+#print("Threads Ended!!")
 #-------------------------------------------------------------------------------
