@@ -36,15 +36,13 @@
 
 
 #Relevant Libaries
-#-----------------
+#--------------------------------------------
 import socket
 import sys
-
-#NEW!!
 import threading
 import os
   #Used for clearing terminal and quick usage
-#-----------------
+#--------------------------------------------
 
 
 #Global Variables
@@ -59,41 +57,60 @@ playerAddress = (0,0)
 serverAddress = (0,0)
 
 
-#Game started flag (allows)
-
-#NEW!!!
+#Response converted to a string
 stringResponse = ""
-
-
-#
-#Hold the player's t-port   [Communicate with tracker.py]
-#t-port = 0
-
-#Hold the player's p-port   [Communicate with other players in-game]
-#p-port = 0
 #--------------------------------------------------------------
 
 
 
 #Client Functions
 #-------------------------------------------------------------------------------------
-
 #Send a Message to the Server
 def sendServerMessage(message):
     #Send message to Server
     playerSocket.sendto(message.encode('utf-8'), serverAddress)
 
 
-#Receive a Message/Response from the Server on the specified port?
-def receiveMessage():
-    #DEBUG
-    print("Place holder")
+#User's input
+def userInp():
+    #Listen for the user's input until the exitFlag has been activated
+    while True:
+        #Send commands to the Server/tracker.py
+        sendServerMessage(str(input("\nCommand To Server: ")))
 
 
-#Close the Connection between the Client and the Server
-def closeConnection():
-    #Close the socket connection
-    playerSocket.close()
+#Print and handle server responses
+def servResp():
+    #Listen for the server's response until the exitFlag has been activated
+    while True:
+        #Receive response from Server
+        serverResponse, serverAddress = playerSocket.recvfrom(1024)
+
+        #stringResponse
+        stringResponse = str(serverResponse)
+        
+
+        #Game started, user has been joined into a game
+        if stringResponse.find("game started: ") != -1:
+            #Clear the terminal, display game info UI, and allow the player to interact with the game
+
+            #Linux & Unix terminal clear
+            if str(os.name) != 'nt':
+                os.system("clear")
+            #Windows terminal clear
+            else:
+                os.system("cls")
+
+            #Collect the Game-Id of the user's game
+            gameIdentifier = stringResponse[stringResponse.find("game started: "):stringResponse.find("\n")]
+
+
+            #Print the Game Information
+            displayGame(gameIdentifier)
+
+
+        #Print the server's response
+        print(f"Server Response: {serverResponse.decode('utf-8')}")    
 #-------------------------------------------------------------------------------------
 
 
@@ -130,41 +147,6 @@ def displayGame(gameId):
     print("****************************************************************************************")
     print("{Game Identifier}:", gameId + '\n')
     #Print all of the players in the game
-
-
-
-#User's input
-def userInp():
-    while True:
-        #Send commands to the Server/tracker.py
-        sendServerMessage(str(input("\nCommand To Server: ")))
-
-
-#Print and handle server responses
-def servResp():
-    while True:
-        #Receive response from Server
-        serverResponse, serverAddress = playerSocket.recvfrom(1024)
-
-        #stringResponse
-        stringResponse = str(serverResponse)
-        
-
-       #Include commands 
-        if stringResponse.find("game started: ") != -1:
-            #Linux & Unix terminal clear
-            if str(os.name) != 'nt':
-                os.system("clear")
-            #Windows terminal clear
-            else:
-                os.system("cls")
-
-            #Collect the Game-Id of the user's game
-            gameIdentifier = stringResponse[stringResponse.find("game started: "):stringResponse.find("\n")]
-
-
-        #Print the server's response
-        print(f"Server Response: {serverResponse.decode('utf-8')}")    
 #-------------------------------------------------------------------------------------------------------
 
 
@@ -214,74 +196,20 @@ playerSocket.bind(playerAddress)
 displayPlayerGuide()
 
 
+#Later on....
+#May need a new thread for player to player responses??
+
 
 #Threads
-thread0 = threading.Thread(target=userInp)
-thread1 = threading.Thread(target=servResp)
+userInputThread = threading.Thread(target=userInp)
+serverResponse = threading.Thread(target=servResp)
 
 #Start the threads
-thread0.start()
-thread1.start()
+userInputThread.start()
+serverResponse.start()
 
 
-#while True:
-    #End the threads 
-
-
-    #If the server response matches the "game started" code the player's command terminal will be cleared
-    #The user will then witness a new menu of the current players in the game, score, deck, and other relevant information
- 
-
-    #While loop is still going, we will want an if-branch to run over and over again until the game is over or player quits
-    #if 
-
-    #Print the game details (live update!!)
-
-
-#-------------------------------------------------------------------------------
-
-
-
-
-
-
-
-#OLD!!
-#KEEP!!
-#Keep communication running between the Client and server
-#while True:
-
-    #User can start a game from here via the correct command, "start game", this will make the player running THIS SCRIPT the Dealer
- #   sendServerMessage(str(input("\nCommand To Server: ")))
-
-    #Receive response from Server
-  #  serverResponse, serverAddress = playerSocket.recvfrom(1024)
-
-    #stringResponse
-   # stringResponse = str(serverResponse)
-
-
-    #If the server response matches the "game started" code the player's command terminal will be cleared
-    #The user will then witness a new menu of the current players in the game, score, deck, and other relevant information
-    #Include commands 
-    #if stringResponse.find("game started: ") != -1:
-        #Linux & Unix terminal clear
-      #  if str(os.name) != 'nt':
-     #       os.system("clear")
-        #Windows terminal clear
-       # else:
-        #    os.system("cls")
-
-        #Collect the Game-Id of the user's game
-        #gameIdentifier = stringResponse[stringResponse.find("game started: "):stringResponse.find("\n")]
-
-
-    #While loop is still going, we will want an if-branch to run over and over again until the game is over or player quits
-    #if 
-
-    #Print the game details (live update!!)
-
-
-    #Print the server's response
-#    print(f"Server Response: {serverResponse.decode('utf-8')}")
+#DEBUG!!!
+#Threads have been ended??
+print("Threads Ended!!")
 #-------------------------------------------------------------------------------
