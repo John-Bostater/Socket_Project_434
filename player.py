@@ -173,6 +173,9 @@ def servResp():
             #Collect the Game-Id of the user's game
             gameIdentifier = stringResponse[(stringResponse.find("[Game Id]:")+11):stringResponse.find("\n[Players in Game]:")]
 
+        #Collect the 
+#Collect other information below: (Players in Game {use /t for parsed lines?})
+
 
             #Print a One-time success message to the Player, as their game has started
             if not gameStarted:

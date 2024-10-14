@@ -481,16 +481,12 @@ while True:
                     #Message to be sent
                     messageToPlayer = "SUCCESS\nGame Started: player\n [Game Id]: " + str(len(activeGames))
 
-                    #Send a special message to the player.. starting a game on the players end
-                    #sendRegisteredPlayerMessage(registeredPlayers[randPlayerIndex][0], gameMessage)
-
-
+                 
                 #Sufficient number of players added
                 elif addedPlayers == (numberOfPlayers - 1):
                     #Add the player list to the new game tuple
                     activeGames.append((len(activeGames), dealerName, otherPlayers))
 
-#NEW!!!
                     #Parse the 'otherPlayers' list and compile a message to send to the dealer
                     for player in otherPlayers:
                         #Add the player's information to both messages
