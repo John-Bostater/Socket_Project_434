@@ -69,6 +69,11 @@ threadsRunning = False
 #NEW!!!
 #Used for one-time print (so far...)
 gameStarted = False
+
+
+#NEW!!!
+
+
 #--------------------------------------------------------------
 
 
@@ -109,11 +114,17 @@ def displayGame(gameId):
     print("\n{Number of Holes}:")
     #Parse all of the players in the game (find game via the game Id) and print their names!!
 
-
     print("****************************************************************************************")
     #User-Input Space
     print("\n[Gameplay Command]: ", end="")
     #Print all of the players in the game
+
+
+#NEW!!  (unecessary??)
+#Display the Messages between Players
+def playerInbox():
+    #Placeholder
+    print('placeholder')
 #-------------------------------------------------------------------------------------------------------
 
 
@@ -145,7 +156,7 @@ def servResp():
         serverResponse, serverAddress = playerSocket.recvfrom(1024)
 
         #stringResponse
-        stringResponse = str(serverResponse)
+        stringResponse = str(serverResponse.decode('utf-8'))
         
 
         #Game Started, user has been joined into a game
@@ -160,7 +171,7 @@ def servResp():
                 os.system("cls")
 
             #Collect the Game-Id of the user's game
-            gameIdentifier = stringResponse[(stringResponse.find("[Game Id]:")+11):stringResponse.find("\n")]
+            gameIdentifier = stringResponse[(stringResponse.find("[Game Id]:")+11):stringResponse.find("\n[Players in Game]:")]
 
 
             #Print a One-time success message to the Player, as their game has started
@@ -177,13 +188,14 @@ def servResp():
             displayGame(gameIdentifier)
 
 
-#DEBUG!
-            print("Here>!")
+            #Start a thread for the active game that will listen on p-port?
 
-            #NEW!!
-            #break
 
-            
+#DEBUG!!!
+            #Print the game started message (contains game info!)
+            print('!!!!!GAME STARTED MESSAGE\n\n' + stringResponse)
+
+
         else:
             #Print the server's response
             print(f"\nServer Response: {serverResponse.decode('utf-8')}" + "\n\nCommand to the Server: ", end="")    
