@@ -64,6 +64,11 @@ stringResponse = ""
 #New!!
 #Flag the allows the threads to run as well as stop them
 threadsRunning = False
+
+
+#NEW!!!
+#Used for one-time print (so far...)
+gameStarted = False
 #--------------------------------------------------------------
 
 
@@ -131,6 +136,9 @@ def userInp():
 
 #Print and handle server responses
 def servResp():
+    #NEW!!
+    global gameStarted
+
     #Listen for the server's response until the exitFlag has been activated
     while threadsRunning:
         #Receive response from Server
@@ -152,12 +160,23 @@ def servResp():
                 os.system("cls")
 
             #Collect the Game-Id of the user's game
-            gameIdentifier = stringResponse[stringResponse.find("[Game Id]: "):stringResponse.find("\n")]
+            gameIdentifier = stringResponse[stringResponse.find("[Game Id]: "):]
+
+
+            #Print a One-time success message to the Player, as their game has started
+            if not gameStarted:
+                #Success message
+                print("Server Response:", serverResponse.decode('utf-8')[:serverResponse.decode('utf-8').find("\n")])
+
+                #Update the flag
+                #global gameStarted
+                gameStarted = True
+
 
             #Print the Game Information
             displayGame(gameIdentifier)
 
-            #SKIP SERVER RESPONSE!!
+            
         else:
             #Print the server's response
             print(f"\nServer Response: {serverResponse.decode('utf-8')}" + "\n\nCommand to the Server: ", end="")    

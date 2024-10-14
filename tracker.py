@@ -386,19 +386,16 @@ while True:
     elif clientRequest.find("start game") != -1:
         #Collect the parameters of the 'start game' command
 
-    #NEW!!
         #List of all of the players In the game (including dealer)
-
+        playersInGame = []
+        
+        #Updated player tuple (placeholder)
+        updatedPlayer = 0
 
 
         #Name of the dealer
         cutString = clientRequest[11:]      #Contains: <dealerName> <n> <#holes>
         dealerName = cutString[:cutString.find(' ')]
-
-
-#DEBUG!!
-        #print("Sending the dealer a message via new command!!")
-        #sendRegisteredPlayerMessage(dealerName, "Yes ma'am")
 
 
         #n (Number of players)
@@ -411,9 +408,6 @@ while True:
         #Number of Holes
         numberOfHoles = int(cutString[(cutString.find(' ')+1):])
 
-
-#DEBUG!!
-        #print('Check me: \''+str(numberOfPlayers)+'\'')
 
         #Number of Players falls within the appropriate range:  2 <= x <= 4
         #Number og Holes falls within the appropriate range: 1 <= y <= 9
@@ -431,10 +425,11 @@ while True:
                     #Update the Dealer's flags and replace the tuple with the new one
                     updatedPlayer = (player[0], player[1], player[2], player[3], "dealer", "in-play")
 
-#LEFT OFF: 10/12/24
-#NEW!!
+
+#ORIGINAL POSITION!!
                     #Send the "game started" message to the dealer/player so their player.py script can react accordingly
-                    sendRegisteredPlayerMessage(dealerName, "game started: dealer\n")
+                    sendRegisteredPlayerMessage(dealerName, "SUCCESS\ngame started: dealer\n")
+
 
                     #Break the loop                    
                     break
@@ -444,11 +439,8 @@ while True:
                     dealerIndex += 1
 
 
-            #Update the dealer's tuple, isDealer[3] = True, inActiveGame[4] = True
+            #Update the dealer's tuple, isDealer[4] = "dealer", inActiveGame[4] = True
             registeredPlayers[dealerIndex] = updatedPlayer
-
-            #List that will hold all of the players
-            otherPlayers = []
 
 
             #Break while-loop once 'numberOfPlayers - 1' players is added
@@ -464,12 +456,10 @@ while True:
                 #Generate a random number of the player to be picked via their index # from registeredPlayers list
                 randPlayerIndex = random.randint(0, len(registeredPlayers)-1)
 
-#DEBUG!!
-                #print('randPlayerindex:', randPlayerIndex)
 
-
-                #If the selected player is not already in a game add them to the list 'otherPlayers'
-                if registeredPlayers[randPlayerIndex][5] != True:
+                #Add random player into the game
+                #If the selected player is not already in a game add them to the list 'playersInGame'
+                if registeredPlayers[randPlayerIndex][5] != 'in-play':
                     #Increment the break counter
                     addedPlayers += 1
 
@@ -478,8 +468,8 @@ while True:
                     #Update the players tuple
                     registeredPlayers[randPlayerIndex] = updatedPlayer
 
-                    #Add the player to the list 'otherPlayers'
-                    otherPlayers.append(registeredPlayers[randPlayerIndex])
+                    #Add the player to the list 'playersInGame'
+                    playersInGame.append(registeredPlayers[randPlayerIndex])
 
                     #Message to be sent
                     gameMessage = "game started: player\n [Game Identifier]: " + str(len(activeGames))
@@ -496,18 +486,25 @@ while True:
 
                 #Sufficient number of players added
                 if addedPlayers == (numberOfPlayers - 1):
-                    #Add
+#NEW!! Position
+                    #Send the "game started" message to the dealer/player so their player.py script can react accordingly
+                    sendRegisteredPlayerMessage(dealerName, "game started: dealer\n")
+
+                    
+    #NEW GAME TUPLE!!! Add this to the list of active games: activeGames
+                    #Add the player list to the new game tuple
+                    activeGames.append((("Game-Id: " + str(len(activeGames)+1)), playersInGame, numberOfHoles))
+
+    #DEBUG!!!
+                    print("Here!!!")
 
 
-                    #Inform dealer of success
-                    sendClientMessage(currentClientAddress, "SUCCESS")
-                    #Break the while-loop
+                    #Break the while loop!
                     break
-#KEEP!
-                else:
-                    #Player input is incorrect, send FAILURE message
-                    sendClientMessage(currentClientAddress, "FAILURE")
-            
+        else:
+            #Player input is incorrect, send FAILURE message
+            sendClientMessage(currentClientAddress, "FAILURE")
+
 
 
     #Query Games
