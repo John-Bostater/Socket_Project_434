@@ -19,8 +19,14 @@
     
         ["Name", IPv4, t-port, p-port, dealerFlag, inGameFlag]
 
-        {player[0]}                                 {player[5]}
-    
+        {player[0]}                                {player[5]}
+
+       
+       ~ dealerFlag =  "dealer" | "player"
+
+       ~ inGameFlag =  "free" | "in-play"
+
+
         
 
 [Group 61 Port Number Range]: 
@@ -60,6 +66,9 @@
 import socket
 import random
 import sys
+
+#NEW!!
+import threading    #Use for running multiple games at once??
 #------------------
 
 
@@ -186,7 +195,7 @@ def registerPlayer(playerInfo):
 
     
     #Complete the player tuple and add it to the registered players list
-    newPlayer = (playerName, ipAddress, t_port, p_port, False, False)
+    newPlayer = (playerName, ipAddress, t_port, p_port, "player", "free")
         #isDealer = False, inActiveGame = False
 
 
@@ -281,9 +290,10 @@ def numPlayersInActiveGame():
     #Variable to hold the total number of registered players in an active game
     numberOfActivePlayers = 0
 
-    #Parse the 'registeredPlayers' array and check for the 
+    #Parse the 'registeredPlayers' array and check whether the player is in a game
     for player in registeredPlayers:
-        if player[3] == True:
+        #If player is in game, increment counter
+        if player[4] == "in-play":
             #Increment the counter of players in an active game
             numberOfActivePlayers += 1
 
@@ -376,6 +386,11 @@ while True:
     elif clientRequest.find("start game") != -1:
         #Collect the parameters of the 'start game' command
 
+    #NEW!!
+        #List of all of the players In the game (including dealer)
+
+
+
         #Name of the dealer
         cutString = clientRequest[11:]      #Contains: <dealerName> <n> <#holes>
         dealerName = cutString[:cutString.find(' ')]
@@ -408,13 +423,13 @@ while True:
 
 
             #Change the dealer player's flags:   
-            #       player[3] --> {dealerFlag}     player[4] --> {inGameFlag} 
+            #       player[4] --> {dealerFlag}     player[5] --> {inGameFlag} 
             for player in registeredPlayers:
       
                 #We have found the coinciding dealer's tuple which we will modify
                 if player[0] == dealerName:
                     #Update the Dealer's flags and replace the tuple with the new one
-                    updatedPlayer = (player[0], player[1], player[2], player[3], True, True)
+                    updatedPlayer = (player[0], player[1], player[2], player[3], "dealer", "in-play")
 
 #LEFT OFF: 10/12/24
 #NEW!!
@@ -459,7 +474,7 @@ while True:
                     addedPlayers += 1
 
                     #Update the player's flag, inActiveGame = True  {registeredPlayers[4]}
-                    updatedPlayer = (registeredPlayers[randPlayerIndex][0], registeredPlayers[randPlayerIndex][1], registeredPlayers[randPlayerIndex][2], registeredPlayers[randPlayerIndex][3], False, True)
+                    updatedPlayer = (registeredPlayers[randPlayerIndex][0], registeredPlayers[randPlayerIndex][1], registeredPlayers[randPlayerIndex][2], registeredPlayers[randPlayerIndex][3], "player", "in-play")
                     #Update the players tuple
                     registeredPlayers[randPlayerIndex] = updatedPlayer
 
@@ -467,7 +482,7 @@ while True:
                     otherPlayers.append(registeredPlayers[randPlayerIndex])
 
                     #Message to be sent
-                    gameMessage = "game started: player\n"
+                    gameMessage = "game started: player\n [Game Identifier]: " + str(len(activeGames))
 
 
                     #Send a special message to the player.. starting a game on the players end
@@ -481,6 +496,9 @@ while True:
 
                 #Sufficient number of players added
                 if addedPlayers == (numberOfPlayers - 1):
+                    #Add
+
+
                     #Inform dealer of success
                     sendClientMessage(currentClientAddress, "SUCCESS")
                     #Break the while-loop

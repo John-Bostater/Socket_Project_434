@@ -99,7 +99,15 @@ def displayGame(gameId):
     print("****************************************************************************************")
     print("*                                   Live Game                                          *")
     print("****************************************************************************************")
-    print("{Game Identifier}:", gameId + '\n')
+    print("{Game Identifier}:", gameId)
+    print("\n{Players in Game}:")
+    print("\n{Number of Holes}:")
+    #Parse all of the players in the game (find game via the game Id) and print their names!!
+
+
+    print("****************************************************************************************")
+    #User-Input Space
+    print("\n[Gameplay Command]: ", end="")
     #Print all of the players in the game
 #-------------------------------------------------------------------------------------------------------
 
@@ -112,10 +120,6 @@ def sendServerMessage(message):
     #Send message to Server
     playerSocket.sendto(message.encode('utf-8'), serverAddress)
 
-
-
-#LEFT OFF HERE!!!
-#Fix input to not have "command to server" as this will be a one time print of the menu
 
 #User's input
 def userInp():
@@ -148,15 +152,15 @@ def servResp():
                 os.system("cls")
 
             #Collect the Game-Id of the user's game
-            gameIdentifier = stringResponse[stringResponse.find("game started: "):stringResponse.find("\n")]
-
+            gameIdentifier = stringResponse[stringResponse.find("[Game Id]: "):stringResponse.find("\n")]
 
             #Print the Game Information
             displayGame(gameIdentifier)
 
-
-        #Print the server's response
-        print(f"\nServer Response: {serverResponse.decode('utf-8')}" + "\n\nCommand to the Server: ", end="")    
+            #SKIP SERVER RESPONSE!!
+        else:
+            #Print the server's response
+            print(f"\nServer Response: {serverResponse.decode('utf-8')}" + "\n\nCommand to the Server: ", end="")    
 #-------------------------------------------------------------------------------------
 
 
@@ -221,8 +225,4 @@ threadsRunning = True
 #Start the threads
 userInputThread.start()
 serverResponse.start()
-
-#DEBUG!!!
-#Threads have been ended??
-#print("Threads Ended!!")
 #-------------------------------------------------------------------------------
