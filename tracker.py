@@ -311,7 +311,6 @@ def showRegPlayers():
 
 
 
-
 #Main/Driver Space
 #-------------------------------------------------------------------------------
 #Collect the Server IPv4 Address and Port Number, which will be [31500] for my group
@@ -341,16 +340,15 @@ displayMainMenu()
 while True:
     #Receive a Message/Request from the Client
     message, currentClientAddress = serverSocket.recvfrom(1024)
-    #print(f"Received Message from Client: {message.decode('utf-8')} from {currentClientAddress}")
 
-
-    #Client Request variable 
+    #Client Request variable
     clientRequest = str(message.decode('utf-8'))
 
     #Print the incoming Client-Command
     print(f'[Client Command]:\t{clientRequest}   from    {currentClientAddress}')
 
 
+#STATUS: Finished? (double check!)
     #Register Player
     if clientRequest.find("register") != -1 and len(clientRequest) >= 28:
         #Pass the: IPv4, t-port, and p-port
@@ -360,6 +358,7 @@ while True:
         print('Player list After Register:',registeredPlayers)
 
 
+#STATUS: Double Check, I think finished??
     #Query Players
     elif clientRequest.find("query players") != -1:
         #Message of the Player Query
@@ -378,16 +377,15 @@ while True:
         sendClientMessage(currentClientAddress, queryMessage)
 
 
-#LEFT OFF HERE:  10/6/24
-#[ToDo]:
+
+#LEFT OFF: [10/14/24]  
+    # Make the message sent to the player regarding "gameInfo" look similar to
 
 
+#STATUS: Unfinished
     #Start Game
     elif clientRequest.find("start game") != -1:
         #Collect the parameters of the 'start game' command
-
-        #List of all of the players In the game (including dealer)
-        playersInGame = []
         
         #Updated player tuple (placeholder)
         updatedPlayer = 0
@@ -411,7 +409,7 @@ while True:
 
         #Number of Players falls within the appropriate range:  2 <= x <= 4
         #Number og Holes falls within the appropriate range: 1 <= y <= 9
-        if playerIsRegistered(dealerName) and not playerInActiveGame(dealerName) and numberOfPlayers >= 2 and numberOfPlayers <= 4 and numberOfHoles >= 1 and numberOfHoles <= 9 and numberOfPlayers <= (len(registeredPlayers) - numPlayersInActiveGame()): 
+        if playerIsRegistered(dealerName) and not playerInActiveGame(dealerName) and numberOfPlayers >= 2 and numberOfPlayers <= 4 and numberOfHoles >= 1 and numberOfHoles <= 9 and not (numberOfPlayers > len(registeredPlayers)): 
             #Index variable
             dealerIndex = 0
 
@@ -425,11 +423,9 @@ while True:
                     #Update the Dealer's flags and replace the tuple with the new one
                     updatedPlayer = (player[0], player[1], player[2], player[3], "dealer", "in-play")
 
-
 #ORIGINAL POSITION!!
-                    #Send the "game started" message to the dealer/player so their player.py script can react accordingly
-                    sendRegisteredPlayerMessage(dealerName, "SUCCESS\ngame started: dealer\n")
-
+                    #Send the "Game Started" message to the dealer/player so their player.py script can react accordingly
+                    sendRegisteredPlayerMessage(dealerName, ("SUCCESS\nGame Started: dealer\n[Game Id]: " + str(len(activeGames))))
 
                     #Break the loop                    
                     break
@@ -444,9 +440,10 @@ while True:
 
 
             #Break while-loop once 'numberOfPlayers - 1' players is added
-            # 
-            #Players to be added variable
             addedPlayers = 0
+
+            #List of all of the players In the game (including dealer)
+            otherPlayers = []
 
 
             #Pick <n> more random players from the 'registeredPlayers' array that we will add to the (gameTuple)
@@ -455,10 +452,18 @@ while True:
             while True:
                 #Generate a random number of the player to be picked via their index # from registeredPlayers list
                 randPlayerIndex = random.randint(0, len(registeredPlayers)-1)
+                
+    #DEBUG!!!
+                print("Omg!", addedPlayers, registeredPlayers)
 
+                #NEW!!
+                #if len(registeredPlayers)-1 != 0:
+                #else:
+                    #NEW?!?!?
+                 #   break
 
                 #Add random player into the game
-                #If the selected player is not already in a game add them to the list 'playersInGame'
+                #If the selected player is not already in a game add them to the list 'otherPlayers'
                 if registeredPlayers[randPlayerIndex][5] != 'in-play':
                     #Increment the break counter
                     addedPlayers += 1
@@ -468,35 +473,26 @@ while True:
                     #Update the players tuple
                     registeredPlayers[randPlayerIndex] = updatedPlayer
 
-                    #Add the player to the list 'playersInGame'
-                    playersInGame.append(registeredPlayers[randPlayerIndex])
+                    #Add the player to the list 'otherPlayers'
+                    otherPlayers.append(registeredPlayers[randPlayerIndex])
 
                     #Message to be sent
-                    gameMessage = "game started: player\n [Game Identifier]: " + str(len(activeGames))
-
+                    gameMessage = "SUCCESS\nGame Started: player\n [Game Id]: " + str(len(activeGames))
 
                     #Send a special message to the player.. starting a game on the players end
                     sendRegisteredPlayerMessage(registeredPlayers[randPlayerIndex][0], gameMessage)
 
 
-
-#[TODO]
-#Send a SPECIAL_MESSAGE to the player that 'player.py' will process specially upon receiving from the server
-
-
                 #Sufficient number of players added
-                if addedPlayers == (numberOfPlayers - 1):
+                elif addedPlayers == (numberOfPlayers - 1):
 #NEW!! Position
-                    #Send the "game started" message to the dealer/player so their player.py script can react accordingly
-                    sendRegisteredPlayerMessage(dealerName, "game started: dealer\n")
+                    #Send the "Game Started" message to the dealer/player so their player.py script can react accordingly
+                   # sendRegisteredPlayerMessage(dealerName, "SUCESS\nGame Started: dealer\n[Game Id]: ")
 
                     
-    #NEW GAME TUPLE!!! Add this to the list of active games: activeGames
+#NEW GAME TUPLE!!! Add this to the list of active games: activeGames
                     #Add the player list to the new game tuple
-                    activeGames.append((("Game-Id: " + str(len(activeGames)+1)), playersInGame, numberOfHoles))
-
-    #DEBUG!!!
-                    print("Here!!!")
+                    activeGames.append((len(activeGames), dealerName, otherPlayers))
 
 
                     #Break the while loop!
@@ -506,42 +502,59 @@ while True:
             sendClientMessage(currentClientAddress, "FAILURE")
 
 
-
+#STATUS: Finished
     #Query Games
     elif clientRequest.find("query games") != -1:
         #Message of the Player Query
-        queryMessage = "\n[Number of Ongoing Games]: " + str(len(activeGames)) + "\n"
+        queryMessage = "\n\n[Number of Ongoing Games]: " + str(len(activeGames)) + "\n"
 
         #Parse all the Registered Players/Tuples so their info can be printed
         for game in activeGames:
-            queryMessage += f"\n[{game[0]}]\n"
+            queryMessage += f"\n[Game Identifier]: {game[0]}\n"
 
             #For-loop that will add all of the players names to the query message
             #for i in range((len(game))-1):
             #Print all of the tuple elements
-            queryMessage += f" [Players]:\n  {game[1]}\n\n [Number Of Holes]: {game[2]}\n"
+            queryMessage += f" \n [Dealer]: {game[1]}\n\n [Players]:\n"
+            
 
-        
-        #Add the ending part of the query message
-        #queryMessage += "]"
+            #Parse all of the other players and add their names to the message
+            #{game[2][0]}
+            for player in game[2]:
+                queryMessage += f"\t{player}\n"
+
 
         #Send the query of players to the requesting client/current client
         sendClientMessage(currentClientAddress, queryMessage)
 
 
+#STATUS: Unfinished
     #End Games
     elif clientRequest.find("end") != -1 and len(clientRequest) > 3:
-        print('PlaceHolder')
+        #Delimiter for breaking apart the clientRequest and getting information
+        delimiter = clientRequest.find(" ")+1
+
+        #Get the game identifier from the other half of the client request
+        gameId = clientRequest[delimiter:]
+
+
+        print("Game Id to End!!:", gameId)
+
+
+#Check that the <player> name entered is actually the Dealer. if not, send: FAILURE
+
+
+        #print('PlaceHolder')
 
 
 
 #Thread testing space
 #DEBUG!!
-    #End Games
     elif clientRequest.find("debug") != -1 and len(clientRequest) > 3:
         print('PlaceHolder')
 
 
+#STATUS: Finished??
     #DeRegister Player
     elif clientRequest.find("de register") != -1 and len(clientRequest) > 12:
         #Message for the Client (either: SUCCESS or FAILURE)

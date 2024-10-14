@@ -148,8 +148,8 @@ def servResp():
         stringResponse = str(serverResponse)
         
 
-        #Game started, user has been joined into a game
-        if stringResponse.find("game started: ") != -1:
+        #Game Started, user has been joined into a game
+        if stringResponse.find("Game Started: ") != -1:
             #Clear the terminal, display game info UI, and allow the player to interact with the game
 
             #Linux & Unix terminal clear
@@ -160,13 +160,13 @@ def servResp():
                 os.system("cls")
 
             #Collect the Game-Id of the user's game
-            gameIdentifier = stringResponse[stringResponse.find("[Game Id]: "):]
+            gameIdentifier = stringResponse[(stringResponse.find("[Game Id]:")+11):stringResponse.find("\n")]
 
 
             #Print a One-time success message to the Player, as their game has started
             if not gameStarted:
                 #Success message
-                print("Server Response:", serverResponse.decode('utf-8')[:serverResponse.decode('utf-8').find("\n")])
+                print("\nServer Response:", serverResponse.decode('utf-8')[:serverResponse.decode('utf-8').find("\n")])
 
                 #Update the flag
                 #global gameStarted
@@ -175,6 +175,13 @@ def servResp():
 
             #Print the Game Information
             displayGame(gameIdentifier)
+
+
+#DEBUG!
+            print("Here>!")
+
+            #NEW!!
+            #break
 
             
         else:
