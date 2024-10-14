@@ -510,19 +510,20 @@ while True:
     #Query Games
     elif clientRequest.find("query games") != -1:
         #Message of the Player Query
-        queryMessage = '\n[Number of Ongoing Games]: ' + str(len(activeGames))
+        queryMessage = "\n[Number of Ongoing Games]: " + str(len(activeGames)) + "\n"
 
         #Parse all the Registered Players/Tuples so their info can be printed
         for game in activeGames:
-            queryMessage += f"\n [{game[0]}"
+            queryMessage += f"\n[{game[0]}]\n"
 
             #For-loop that will add all of the players names to the query message
-            for i in (len(game) - 1):
-                queryMessage += f", {game[i]}"
+            #for i in range((len(game))-1):
+            #Print all of the tuple elements
+            queryMessage += f" [Players]:\n  {game[1]}\n\n [Number Of Holes]: {game[2]}\n"
 
         
         #Add the ending part of the query message
-        queryMessage += "]"
+        #queryMessage += "]"
 
         #Send the query of players to the requesting client/current client
         sendClientMessage(currentClientAddress, queryMessage)

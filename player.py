@@ -136,7 +136,7 @@ def userInp():
 
 #Print and handle server responses
 def servResp():
-    #NEW!!
+    #Set up the gameStarted flag as a global variable so our re-def does not break
     global gameStarted
 
     #Listen for the server's response until the exitFlag has been activated
