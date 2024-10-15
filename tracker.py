@@ -99,11 +99,13 @@ registeredPlayers = []
 #List of all Games in Progress
 gamesList = []
 
-#List of threads that are running games!
+
+#NEW REDEFINITION
+#List of all threads that are running games
 activeGames = []
 
 
-#Dictionary (HashMap) containing all of the player's card decks for a certain game
+#Dictionary (HashMap) containing all of the active players card deck's
 playerDecks = {} 
 
 #Client address of the latest message/command
@@ -201,11 +203,19 @@ def registerPlayer(playerInfo):
 
 
 
+
 #NEW!!!
+# #LEFT OFF: 10/15/24
+
 #Start Game
+def startGame():
+    #Parameters to include in the functions arg space above!!!!:
+    #
+    #   dealerName, otherPlayers <list>, 
 
 
-
+#PLACEHOLDER
+    print('Placeholder')
 
 
 #Deal Cards [Dealer Only]

@@ -198,7 +198,8 @@ def servResp():
             #Start a thread for the active game that will listen on p-port?
 
 
-        else:
+        #If a game has not started, response is "Server --> Client"
+        if not gameStarted:
             #Print the server's response
             print(f"\nServer Response: {serverResponse.decode('utf-8')}" + "\n\nCommand to the Server: ", end="")    
 #-------------------------------------------------------------------------------------
