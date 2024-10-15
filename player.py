@@ -86,15 +86,18 @@ def displayPlayerGuide():
     print("****************************************************************************************")
     #Client's Address
     print("{Client Address}:", playerAddress, '\n')
+
+    #Commands to server for setting up games and viewing other information...
+    print("{Server Commands}\n")
     #Register the player
     print("  [Register Player]:                 register <Player Name> <IPv4> <t-port> <p-port>\n")   
     #Returns number of players registered
     print("  [Query Registered Players]:        query players\n")
-    print("  [Start Game]:                      start game <Card Dealer Player's Name> <n> <# holes>\n")     
+    print("  [Start Game]:                      start game <dealer's name> <n> <# holes>\n")     
     #Return the # of ongoing games, with game-identifier and the current dealer's name of that game
     print("  [Query Games]:                     query games\n") 
     #End the specified game
-    print("  [End Games]:                       end <game-identifier> <Card Dealer Player's Name>\n")
+    print("  [End Games]:                       end <game-identifier> <dealer's name>\n")
     print("  [DeRegister Player]:               de register <player>\n")
     print("[Note]: Replace the parameters delimited by the chevrons with the relevant data")    
     #Start the game, this command will make the current Player become the dealer
@@ -104,18 +107,27 @@ def displayPlayerGuide():
 
 
 #Game Menu, Once a new game has started they player will see the following menu below
-def displayGame(gameId):
+def displayGame(gameInfo):
     print("****************************************************************************************")
     print("*                                   Live Game                                          *")
     print("****************************************************************************************")
-#NEW!!
-    print(gameId)
-
-
+    #Section for displaying game information:  
+    print("{Game Commands}\n")
+    print("  [Deal Cards]:      deal\n")
+    print("  []:      deal")
+    print("****************************************************************************************")
+    #Section for displaying game information:  
+    print("{Game Information}\n")
+    print(gameInfo)
     print("****************************************************************************************")
     #User-Input Space
     print("\n[Gameplay Command]: ", end="")
     #Print all of the players in the game
+
+
+#NEW!!
+#Display the players
+
 
 
 #NEW!!  (unecessary??)
@@ -167,14 +179,6 @@ def servResp():
             #Windows terminal clear
             else:
                 os.system("cls")
-
-            #Collect the Game-Id of the user's game
-#            gameIdentifier = stringResponse[(stringResponse.find("[Game Id]:")+11):stringResponse.find("\n[Players in Game]:")]
-
-            #Collect the players of the game from the string
-
-
-#Collect other information below: (Players in Game {use /t for parsed lines?})
 
 
             #Print a One-time success message to the Player, as their game has started

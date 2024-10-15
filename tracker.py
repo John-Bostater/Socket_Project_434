@@ -97,10 +97,10 @@ cardDeck = [
 registeredPlayers = []
 
 #List of all Games in Progress
-activeGames = []
+gamesList = []
 
 #List of threads that are running games!
-
+activeGames = []
 
 
 #Dictionary (HashMap) containing all of the player's card decks for a certain game
@@ -201,10 +201,17 @@ def registerPlayer(playerInfo):
 
 
 
+#NEW!!!
+#Start Game
+
+
+
+
+
 #Deal Cards [Dealer Only]
 def dealCards(gameIdentifier):
     #Deal each player in the game 6 cards
-    for players in activeGames:
+    for players in gamesList:
 
         #Add's 6 cards to each players deck
         for i in range(6):
@@ -265,8 +272,8 @@ def playerIsRegistered(playerName):
 
 #returns T/F as to whether the player of 'playerName' is in an active game or not
 def playerInActiveGame(playerName):
-    #Parse the activeGames tuples and look for a matching name
-    for player in activeGames:
+    #Parse the gamesList tuples and look for a matching name
+    for player in gamesList:
         #If the player of "playerName" is in an active game, return True
         if player[0] == playerName:
             #playerName IS registered
@@ -384,7 +391,7 @@ while True:
 
         #Name of the dealer
         cutString = clientRequest[11:]      #Contains: <dealerName> <n> <#holes>
-        dealerName = cutString[:cutString.find(' ')]
+        dealerName = str(cutString[:cutString.find(' ')])
 
 
         #n (Number of players)
@@ -423,7 +430,7 @@ while True:
                     updatedPlayer = (player[0], player[1], player[2], player[3], "dealer", "in-play")
 
                     #Build the message to be sent to the Dealer
-                    messageToDealer = "SUCESSS\n\nGame Started: dealer\n\n[Game Identifier]: " + str(len(activeGames)) + "\n\n[Players in Game]:\n"
+                    messageToDealer = "SUCESSS\n\nGame Started: dealer\n\n[Game Identifier]: " + str(len(gamesList)) + "\n\n[Card Dealer]: " + dealerName + "\n\n[Players in Game]:\n"
 
                     #Break the loop                    
                     break
@@ -466,13 +473,13 @@ while True:
 
 
                     #Message to be sent to the Player(s)
-                    messageToPlayer = "SUCCESS\nGame Started: player\n[Game Identifier]: " + str(len(activeGames)) + "\n\n[Players in Game]:\n"
+                    messageToPlayer = "SUCCESS\nGame Started: player\n[Game Identifier]: " + str(len(gamesList))  + "\n\n[Dealer]: " + dealerName + "\n\n[Players in Game]:\n"
 
                  
                 #Sufficient number of players added
                 if addedPlayers == numberOfPlayers-1:
                     #Add the player list to the new game tuple
-                    activeGames.append((len(activeGames), dealerName, otherPlayers))
+                    gamesList.append((len(gamesList), dealerName, otherPlayers))
 
                     #Parse the 'otherPlayers' list and compile a message to send to the dealer and other players
                     for player in otherPlayers:
@@ -505,10 +512,10 @@ while True:
     #Query Games
     elif clientRequest.find("query games") != -1:
         #Message of the Player Query
-        queryMessage = "\n\n[Number of Ongoing Games]: " + str(len(activeGames)) + "\n"
+        queryMessage = "\n\n[Number of Ongoing Games]: " + str(len(gamesList)) + "\n"
 
         #Parse all the Registered Players/Tuples so their info can be printed
-        for game in activeGames:
+        for game in gamesList:
             queryMessage += f"\n[Game Identifier]: {game[0]}\n"
 
             #Print all of the tuple elements
@@ -566,7 +573,6 @@ while True:
 
 #NEW!!!
     #Allocate this area of the script for gameplay commands //just to be better organized
-
 
 
     #Invalid Command
