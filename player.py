@@ -156,7 +156,7 @@ def servResp():
         serverResponse, serverAddress = playerSocket.recvfrom(1024)
 
         #stringResponse
-        stringResponse = str(serverResponse.decode('utf-8'))
+        stringResponse = serverResponse.decode('utf-8')
         
 
         #Game Started, user has been joined into a game
@@ -173,7 +173,9 @@ def servResp():
             #Collect the Game-Id of the user's game
             gameIdentifier = stringResponse[(stringResponse.find("[Game Id]:")+11):stringResponse.find("\n[Players in Game]:")]
 
-        #Collect the 
+            #Collect the players of the game from the string
+
+
 #Collect other information below: (Players in Game {use /t for parsed lines?})
 
 

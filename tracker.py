@@ -457,11 +457,9 @@ while True:
             #Inform the randomly picked player that they have been added to a new game 
             #   via: sendRegisteredPlayerMessage
             while True:
-
-
                 #Generate a random number of the player to be picked via their index # from registeredPlayers list
                 randPlayerIndex = random.randint(0, len(registeredPlayers)-1)
-                
+
 
                 #Add random player into the game
                 #If the selected player is not already in a game add them to the list 'otherPlayers'
@@ -479,27 +477,30 @@ while True:
 
 
                     #Message to be sent
-                    messageToPlayer = "SUCCESS\nGame Started: player\n [Game Id]: " + str(len(activeGames))
+                    messageToPlayer = "SUCCESS\nGame Started: player\n[Game Id]: " + str(len(activeGames)) + "\n[Players in Game]:\n"
 
                  
                 #Sufficient number of players added
-                elif addedPlayers == (numberOfPlayers - 1):
+                if addedPlayers == numberOfPlayers-1:
                     #Add the player list to the new game tuple
                     activeGames.append((len(activeGames), dealerName, otherPlayers))
 
-                    #Parse the 'otherPlayers' list and compile a message to send to the dealer
+                    #Parse the 'otherPlayers' list and compile a message to send to the dealer and other players
                     for player in otherPlayers:
                         #Add the player's information to both messages
-                        messageToPlayer += f"\n{player}\n"
+                        messageToPlayer += f"\t{player}\n"
+                        messageToDealer += f"\t{player}\n"
+
+#Build t
+
+
 
                     #Send the "Game Started" message to all players (non-dealer)
                     for player in otherPlayers:
                      
-#SEND OTHER PLAYER(s) A MESSAGE
-                        #Send the built message to the player
+                        #Send the other player(s) a Game started message
                         sendRegisteredPlayerMessage(player[0], messageToPlayer)
 
-#SEND DEALER MESSSAGE
                     #Send the "Game Started" message to the dealer/player so their player.py script can react accordingly
                     sendRegisteredPlayerMessage(dealerName, messageToDealer)
 
