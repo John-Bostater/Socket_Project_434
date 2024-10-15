@@ -56,24 +56,23 @@ playerAddress = (0,0)
 #serverAddress = ("128.110.223.4", 31500)
 serverAddress = (0,0)
 
-
 #Response converted to a string
 stringResponse = ""
 
-
-#New!!
 #Flag the allows the threads to run as well as stop them
 threadsRunning = False
 
-
-#NEW!!!
 #Used for one-time print (so far...)
 gameStarted = False
 
 
 #NEW!!!
+#Hold's the message containing information of the current game the player is in
+gameInfoMessage = ""
 
-
+#NEW!!
+#Hold's the player's personal card deck
+playerDeck = ""     #Make a function that will scrape a player's deck of cards from their deck...
 #--------------------------------------------------------------
 
 
@@ -109,10 +108,9 @@ def displayGame(gameId):
     print("****************************************************************************************")
     print("*                                   Live Game                                          *")
     print("****************************************************************************************")
-    print("{Game Identifier}:", gameId)
-    print("\n{Players in Game}:")
-    print("\n{Number of Holes}:")
-    #Parse all of the players in the game (find game via the game Id) and print their names!!
+#NEW!!
+    print(gameId)
+
 
     print("****************************************************************************************")
     #User-Input Space
@@ -171,7 +169,7 @@ def servResp():
                 os.system("cls")
 
             #Collect the Game-Id of the user's game
-            gameIdentifier = stringResponse[(stringResponse.find("[Game Id]:")+11):stringResponse.find("\n[Players in Game]:")]
+#            gameIdentifier = stringResponse[(stringResponse.find("[Game Id]:")+11):stringResponse.find("\n[Players in Game]:")]
 
             #Collect the players of the game from the string
 
@@ -189,16 +187,11 @@ def servResp():
                 gameStarted = True
 
 
-            #Print the Game Information
-            displayGame(gameIdentifier)
+            #Print the Game Information in a Menu-like format
+            displayGame(stringResponse[stringResponse.find("[Game Identifier]: "):])
 
 
             #Start a thread for the active game that will listen on p-port?
-
-
-#DEBUG!!!
-            #Print the game started message (contains game info!)
-            print('!!!!!GAME STARTED MESSAGE\n\n' + stringResponse)
 
 
         else:

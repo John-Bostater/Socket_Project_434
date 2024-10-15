@@ -422,19 +422,8 @@ while True:
                     #Update the Dealer's flags and replace the tuple with the new one
                     updatedPlayer = (player[0], player[1], player[2], player[3], "dealer", "in-play")
 
-
-#LEFT OFF!! [10/14/24]
-
-#GAME INFORMATION MESSAGE TO DEALER!!!  [Include]: Game-Id, Players in game, Number of Holes {stop parsing message for Players in game once "[Number of Holes]:"" is hit!}
-#Build a message With all of the game details
-                    #Message to be sent to the Dealer
-                    messageToDealer = "SUCESSS\nGame Started: dealer\n[Game Id]: " + str(len(activeGames)) + "\n[Players in Game]:\n"
-
-
-#ORIGINAL POSITION FOR MESSAGE TO DEALER
-                    #Send the "Game Started" message to the dealer/player so their player.py script can react accordingly
-                    #sendRegisteredPlayerMessage(dealerName, messageToDealer)
-
+                    #Build the message to be sent to the Dealer
+                    messageToDealer = "SUCESSS\n\nGame Started: dealer\n\n[Game Identifier]: " + str(len(activeGames)) + "\n\n[Players in Game]:\n"
 
                     #Break the loop                    
                     break
@@ -476,8 +465,8 @@ while True:
                     otherPlayers.append(registeredPlayers[randPlayerIndex])
 
 
-                    #Message to be sent
-                    messageToPlayer = "SUCCESS\nGame Started: player\n[Game Id]: " + str(len(activeGames)) + "\n[Players in Game]:\n"
+                    #Message to be sent to the Player(s)
+                    messageToPlayer = "SUCCESS\nGame Started: player\n[Game Identifier]: " + str(len(activeGames)) + "\n\n[Players in Game]:\n"
 
                  
                 #Sufficient number of players added
@@ -491,30 +480,22 @@ while True:
                         messageToPlayer += f"\t{player}\n"
                         messageToDealer += f"\t{player}\n"
 
-#Build t
-
+                    #Add the number of holes to each message, then add [End of Message] to help stop parsing
+                    messageToDealer += "\n[Number of Holes]: " + str(numberOfHoles)
+                    messageToPlayer += "\n[Number of Holes]: " + str(numberOfHoles)
 
 
                     #Send the "Game Started" message to all players (non-dealer)
                     for player in otherPlayers:
-                     
-                        #Send the other player(s) a Game started message
+                        #Other Players Message
                         sendRegisteredPlayerMessage(player[0], messageToPlayer)
 
-                    #Send the "Game Started" message to the dealer/player so their player.py script can react accordingly
+
+                    #Dealer "Game Started" Message
                     sendRegisteredPlayerMessage(dealerName, messageToDealer)
-
-#DEALER MESSAGE!!
-
 
                     #Break the while loop!
                     break
-
-
-#NEW!!
-            #Start a new game via a thread!
-            hello = 123
-
         else:
             #Player input is incorrect, send FAILURE message
             sendClientMessage(currentClientAddress, "FAILURE")
