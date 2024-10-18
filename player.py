@@ -73,6 +73,11 @@ gameInfoMessage = ""
 #NEW!!
 #Hold's the player's personal card deck
 playerDeck = ""     #Make a function that will scrape a player's deck of cards from their deck...
+
+
+#NEW!!!
+#Flag that will activate if the player is the dealer
+isDealer = False
 #--------------------------------------------------------------
 
 
@@ -121,7 +126,7 @@ def displayGame(gameInfo):
     print(gameInfo)
     print("****************************************************************************************")
     #User-Input Space
-    print("\n[Gameplay Command]: ", end="")
+    #print("\n[Gameplay Command]: ", end="")
     #Print all of the players in the game
 
 
@@ -186,8 +191,7 @@ def servResp():
                 #Success message
                 print("\nServer Response:", serverResponse.decode('utf-8')[:serverResponse.decode('utf-8').find("\n")])
 
-                #Update the flag
-                #global gameStarted
+                #Update the flag (we can now listen for gameplay control messages)
                 gameStarted = True
 
 
@@ -195,7 +199,38 @@ def servResp():
             displayGame(stringResponse[stringResponse.find("[Game Identifier]: "):])
 
 
-            #Start a thread for the active game that will listen on p-port?
+#LEFT OFF: [10/15/24]
+#NEW!!
+
+        #Gameplay Commands branch
+        if gameStarted:
+            #Update to the players card-deck (dealt 6 cards, steal card from other player, new card deck, etc...)
+            #Message: [Card-Deck Update]: //Information
+
+            #Within this branch, we are listening for GamePlay Commands
+
+
+
+            #Deal Cards [Dealer Only]
+            if serverResponse == "[Game Started]: dealer":
+                #Update the player's personal 'isDealer' flag
+                global isDealer     #Make the flag global too!
+                isDealer = True
+
+    #Send a message to the server to deal cards to all of the players in the game
+    #Confirm the dealer on 'tracker.py' end via:    ipv4 and t-port
+                #player[4] == 'dealer'
+                #       AND
+                #player[1]
+
+
+
+
+            #
+            print('\n[Gameplay Command]: ', end="")
+
+            #
+
 
 
         #If a game has not started, response is "Server --> Client"

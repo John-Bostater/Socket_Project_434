@@ -213,6 +213,8 @@ def startGame():
     #
     #   dealerName, otherPlayers <list>, 
 
+    #Run a while loop that will listen for messages on the same port but for 
+
 
 #PLACEHOLDER
     print('Placeholder')
@@ -376,7 +378,9 @@ while True:
         if len(registeredPlayers) > 0:
             #Parse all the Registered Players/Tuples so their info can be printed
             for player in registeredPlayers:
-                queryMessage += f"\n\t[\"{player[0]}\", {player[1]}, {player[2]}, {player[3]}, {player[4]}, {player[5]}]"
+                #Add the players information to the queryMessage
+#OLD!!!                queryMessage += f"\n\t[\"{player[0]}\", {player[1]}, {player[2]}, {player[3]}, {player[4]}, {player[5]}]"
+                queryMessage += f"\n\t{player}"
         else:
             #Show empty list
             queryMessage += '\n\t[]'
@@ -440,7 +444,7 @@ while True:
                     updatedPlayer = (player[0], player[1], player[2], player[3], "dealer", "in-play")
 
                     #Build the message to be sent to the Dealer
-                    messageToDealer = "SUCESSS\n\nGame Started: dealer\n\n[Game Identifier]: " + str(len(gamesList)) + "\n\n[Card Dealer]: " + dealerName + "\n\n[Players in Game]:\n"
+                    messageToDealer = "SUCESSS\n\n[Game Started]: dealer\n\n[Game Identifier]: " + str(len(gamesList)) + "\n\n[Card Dealer]: " + dealerName + "\n\n[Players in Game]:\n"
 
                     #Break the loop                    
                     break
@@ -565,7 +569,7 @@ while True:
 
         #Check if the user is in an ongoing game, if they are, return FAILURE
         #Parse over a copy so we can delete the player from the regular array
-        for player in registeredPlayers[:]:
+        for player in registeredPlayers:
             #Player found, delete the tuple from the list
             if player[0] == deRegName:
                 #Delete the player from the list
