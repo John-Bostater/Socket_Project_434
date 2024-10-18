@@ -148,8 +148,13 @@ def playerInbox():
 #-------------------------------------------------------------------------------------
 #Send a Message to the Server
 def sendServerMessage(message):
+#NEW!!!
+    #If a game has started, send commands with the prefix: "[Game-Identifier]:" so the Server can identify
+
+
     #Send message to Server
     playerSocket.sendto(message.encode('utf-8'), serverAddress)
+
 
 
 #User's input
@@ -223,13 +228,6 @@ def servResp():
                 #player[4] == 'dealer'
                 #       AND
                 #player[1]
-
-
-                #NEW!!!
-    #            print('\n[Gameplay Command]: ', end="")
-
-#DEBUG!!!
-#                print('We made it here1>!>!!')
 
 
             #Add Cards to card deck     [Dealt cards    or      'Steal']

@@ -243,20 +243,29 @@ def dealCards(gameIdentifier):
 #NEW!!
 #Shuffle the deck (i.e. create a deck for the game via the gameIdentifier)
 def shuffleDeck(gameIdentifier):
+    #Deck that will be "shuffled"/created for the game  @game-identifier
+    shuffledDeck = []
+
     #Add's 6 cards to each players deck
     for i in range(52):
         #Randomly generate a number that will correspond to a card in the deck       
         shuffleNum = random.randint(0, len(referenceDeck))
 
         #Add the cards to the players deck
-        #players[1] = (referenceDeck[shuffleNum])
+        shuffleDeck.append(referenceDeck[shuffleNum])
 
         #Remove the pulled card from the reference deck
         del referenceDeck[shuffleNum]
 
+    #Reset the reference deck!
+    referenceDeck = resetDeck()
 
 #DEBUG PRINT
-    print('[Shuffled Deck!!]\n', shuffledDeck!)
+    print('[Shuffled Deck!!]\n', shuffledDeck)
+
+    #return the deck created!
+    return shuffledDeck
+
 
 
 
@@ -425,11 +434,9 @@ while True:
         #Updated player tuple (placeholder)
         updatedPlayer = 0
 
-
         #Name of the dealer
         cutString = clientRequest[11:]      #Contains: <dealerName> <n> <#holes>
         dealerName = str(cutString[:cutString.find(' ')])
-
 
         #n (Number of players)
         cutString = cutString[(cutString.find(' ')+1):]
@@ -437,10 +444,8 @@ while True:
         #Convert the number of players into a decimal type for later...
         numberOfPlayers = int(numberOfPlayers)
 
-
         #Number of Holes
         numberOfHoles = int(cutString[(cutString.find(' ')+1):])
-
 
         #Messages containing game information that will be compiled and sent to the player and dealer
         global messageToPlayer
@@ -610,6 +615,30 @@ while True:
 
 #NEW!!!
     #Allocate this area of the script for gameplay commands //just to be better organized
+    elif clientRequest.find("[Gameplay Command]: ") != -1:
+#DEBUG!!
+        print('Here at least?!!?')
+
+        #Shuffle Cards
+        if clientRequest.find("shuffle deck") != -1:
+            #Get the incoming current client's address
+            for player in registeredPlayers:
+                #If the player is the dealer and in an active game, allow the shuffling of cards!!
+                if player[1] == currentClientAddress[0] and player[2] == str(currentClientAddress[1]) and player[4] == 'dealer' and player[5] == "in-play":
+#DEBUG!!
+                    print('Shuffling card deck')
+
+                    #Shuffle the card deck
+         
+
+        #Deal Cards
+        #Use the created card deck to pop off cards from the top (pop card and deal to player)
+#        if clientRequest.find("deal cards") != -1 and :
+            #Get the incoming current client's address
+#            for player in registeredPlayers:
+#                if str(player[1]) == str(currentClientAddress[0]) and str(player[2]) == str(currentClientAddress[1]):
+                    #DEBUG!!
+#                    print('DEBUG!!')
 
 
     #Invalid Command
