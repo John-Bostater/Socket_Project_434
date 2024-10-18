@@ -379,7 +379,6 @@ while True:
             #Parse all the Registered Players/Tuples so their info can be printed
             for player in registeredPlayers:
                 #Add the players information to the queryMessage
-#OLD!!!                queryMessage += f"\n\t[\"{player[0]}\", {player[1]}, {player[2]}, {player[3]}, {player[4]}, {player[5]}]"
                 queryMessage += f"\n\t{player}"
         else:
             #Show empty list

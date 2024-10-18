@@ -175,7 +175,7 @@ def servResp():
         
 
         #Game Started, user has been joined into a game
-        if stringResponse.find("Game Started: ") != -1:
+        if stringResponse.find("[Game Started]: ") != -1:
             #Clear the terminal, display game info UI, and allow the player to interact with the game
 
             #Linux & Unix terminal clear
@@ -194,6 +194,13 @@ def servResp():
                 #Update the flag (we can now listen for gameplay control messages)
                 gameStarted = True
 
+                #Player is Dealer Check...
+                if stringResponse.find("[Game Started]: dealer") != -1:
+                    #Update the player's personal 'isDealer' flag
+                    global isDealer     #Make the flag global too!
+                    isDealer = True
+
+
 
             #Print the Game Information in a Menu-like format
             displayGame(stringResponse[stringResponse.find("[Game Identifier]: "):])
@@ -211,13 +218,6 @@ def servResp():
             #Within this branch, we are listening for GamePlay Commands
 
 
-
-            #Deal Cards [Dealer Only]
-            if serverResponse == "[Game Started]: dealer":
-                #Update the player's personal 'isDealer' flag
-                global isDealer     #Make the flag global too!
-                isDealer = True
-
     #Send a message to the server to deal cards to all of the players in the game
     #Confirm the dealer on 'tracker.py' end via:    ipv4 and t-port
                 #player[4] == 'dealer'
@@ -225,11 +225,24 @@ def servResp():
                 #player[1]
 
 
+                #NEW!!!
+    #            print('\n[Gameplay Command]: ', end="")
+
+#DEBUG!!!
+#                print('We made it here1>!>!!')
 
 
-           
 
-            #
+            #Deal Cards to the other players in your current game
+            if isDealer and stringResponse.find("") != -1:
+                #For the number of players.............
+
+
+#PLACEHOLDER
+                print('PLACEHOLDER')
+
+
+
 
 
 
