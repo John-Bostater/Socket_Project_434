@@ -241,27 +241,32 @@ def dealCards(gameIdentifier):
     
 
 #NEW!!
-#Shuffle the deck (i.e. create a deck for the game via the gameIdentifier)
+#Shuffle the deck
 def shuffleDeck(gameIdentifier):
     #Deck that will be "shuffled"/created for the game  @game-identifier
     shuffledDeck = []
 
-    #Add's 6 cards to each players deck
+#NEW!!
+    global referenceDeck
+
+    #Shuffle/Create the new 52 card deck as a shuffling/rng of the reference deck
     for i in range(52):
         #Randomly generate a number that will correspond to a card in the deck       
-        shuffleNum = random.randint(0, len(referenceDeck))
+        shuffleNum = random.randint(0, len(referenceDeck)-1)
 
         #Add the cards to the players deck
-        shuffleDeck.append(referenceDeck[shuffleNum])
+        shuffledDeck.append(referenceDeck[shuffleNum])
 
         #Remove the pulled card from the reference deck
         del referenceDeck[shuffleNum]
+
+
 
     #Reset the reference deck!
     referenceDeck = resetDeck()
 
 #DEBUG PRINT
-    print('[Shuffled Deck!!]\n', shuffledDeck)
+    print('[Shuffled Deck!!]\n', shuffledDeck, "\n\n[Length of the new deck]:", str(len(shuffledDeck)))
 
     #return the deck created!
     return shuffledDeck
@@ -619,26 +624,28 @@ while True:
 #DEBUG!!
         print('Here at least?!!?')
 
-        #Shuffle Cards
+        #Shuffle Cards  [Dealer Only]
         if clientRequest.find("shuffle deck") != -1:
-            #Get the incoming current client's address
+            #Get the client's address from the incoming message
             for player in registeredPlayers:
                 #If the player is the dealer and in an active game, allow the shuffling of cards!!
                 if player[1] == currentClientAddress[0] and player[2] == str(currentClientAddress[1]) and player[4] == 'dealer' and player[5] == "in-play":
 #DEBUG!!
                     print('Shuffling card deck')
 
-                    #Shuffle the card deck
-         
+                    #Shuffle the card deck, use the Game-Identifier             OR  +19?!?!?!
+                    shuffleDeck(clientRequest[clientRequest.find("[Game-Id]: ")+18:clientRequest.find("\n\n[Gameplay Command]: ")])
 
-        #Deal Cards
+
+        #Deal Cards  [Dealer Only]
         #Use the created card deck to pop off cards from the top (pop card and deal to player)
-#        if clientRequest.find("deal cards") != -1 and :
+#        elif clientRequest.find("deal cards") != -1 and :
             #Get the incoming current client's address
 #            for player in registeredPlayers:
 #                if str(player[1]) == str(currentClientAddress[0]) and str(player[2]) == str(currentClientAddress[1]):
                     #DEBUG!!
 #                    print('DEBUG!!')
+
 
 
     #Invalid Command

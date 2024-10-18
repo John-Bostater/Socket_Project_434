@@ -66,16 +66,19 @@ threadsRunning = False
 gameStarted = False
 
 
+
 #NEW!!!
 #Hold's the message containing information of the current game the player is in
-gameInfoMessage = ""
+#gameInfoMessage = ""
 
 #NEW!!
 #Hold's the player's personal card deck
 cardDeck = []     #Make a function that will scrape a player's deck of cards from their deck...
 
-
 #NEW!!!
+#Identifier number for the game the player is currently in
+gameIdentifier = -1
+
 #Flag that will activate if the player is the dealer
 isDealer = False
 #--------------------------------------------------------------
@@ -148,12 +151,24 @@ def playerInbox():
 #-------------------------------------------------------------------------------------
 #Send a Message to the Server
 def sendServerMessage(message):
-#NEW!!!
-    #If a game has started, send commands with the prefix: "[Game-Identifier]:" so the Server can identify
+    #Send Gameplay Message to the Server, if theplayer is in an active game
+    if gameStarted:
+        #Gameplay message variable
+        gamePlayMessage = ""
 
+        #If the player is also the dealer, include the game-identifier in the message
+        if isDealer:
+            #Add the game-identifier
+            gamePlayMessage += ("[Game-Id]: " + str(gameIdentifier) + "\n\n")
 
-    #Send message to Server
-    playerSocket.sendto(message.encode('utf-8'), serverAddress)
+        #Complete the message
+        gamePlayMessage += "[Gameplay Command]: " + message
+
+        #Send the gameplay message to the server
+        playerSocket.sendto(gamePlayMessage.encode('utf-8'), serverAddress)
+    else:
+        #Send Regular Message to Server
+        playerSocket.sendto(message.encode('utf-8'), serverAddress)
 
 
 
@@ -204,6 +219,10 @@ def servResp():
                     #Update the player's personal 'isDealer' flag
                     global isDealer     #Make the flag global too!
                     isDealer = True
+
+                    #Gather the game identifier
+                    global gameIdentifier
+                    gameIdentifier = stringResponse[stringResponse.find("[Game-Id]: ")+10:stringResponse.find("\n\n[Card Dealer]:")]
 
 
 
@@ -260,7 +279,7 @@ def servResp():
                 print('placeholder')
 
 
-        #[Server Commands Only...]
+        #[Non-Gameplay Commands]
         if not gameStarted:
             #Print the server's response
             print(f"\nServer Response: {serverResponse.decode('utf-8')}" + "\n\nCommand to the Server: ", end="")    
@@ -323,7 +342,6 @@ serverResponse = threading.Thread(target=servResp)
 
 #Update the flag so the threads can run indefinitely until prompted to stop
 threadsRunning = True
-
 
 #Start the threads
 userInputThread.start()
