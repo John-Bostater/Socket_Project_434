@@ -78,8 +78,8 @@ serverAddress = (0,0)
 #Static value
 serverPort = 31500
 
-#Card deck that the Dealer-Player will deal cards from
-cardDeck = [
+#Card deck that will be used as a reference for the card deck created for a game
+referenceDeck = [
     #Clubs
     "AC", "2C", "3C", "4C", "5C", "6C", "7C", "8C", "9C", "10C", "JC", "QC", "KC",
 
@@ -101,7 +101,7 @@ gamesList = []
 
 
 #NEW REDEFINITION
-#List of all threads that are running games
+#List of threads that are running games
 activeGames = []
 
 
@@ -223,19 +223,43 @@ def startGame():
 #Deal Cards [Dealer Only]
 def dealCards(gameIdentifier):
     #Deal each player in the game 6 cards
-    for players in gamesList:
+    for players in gamesList[gameIdentifier][2]:
 
         #Add's 6 cards to each players deck
         for i in range(6):
             #Randomly generate a number that will correspond to a card in the deck       
-            shuffleNum = random.randint(0, len(cardDeck))
+            shuffleNum = random.randint(0, len(referenceDeck))
 
             #Add the cards to the players deck
-            players[1] = (cardDeck[shuffleNum])
+            #players[1] = (referenceDeck[shuffleNum])
 
-            #Remove the pulled card from the deck
-            del cardDeck[shuffleNum]
+            #Remove the pulled card from the reference deck
+            del referenceDeck[shuffleNum]
+
+#DEBUG!!!
+    #print the created card deck for the player
     
+
+#NEW!!
+#Shuffle the deck (i.e. create a deck for the game via the gameIdentifier)
+def shuffleDeck(gameIdentifier):
+    #Add's 6 cards to each players deck
+    for i in range(52):
+        #Randomly generate a number that will correspond to a card in the deck       
+        shuffleNum = random.randint(0, len(referenceDeck))
+
+        #Add the cards to the players deck
+        #players[1] = (referenceDeck[shuffleNum])
+
+        #Remove the pulled card from the reference deck
+        del referenceDeck[shuffleNum]
+
+
+#DEBUG PRINT
+    print('[Shuffled Deck!!]\n', shuffledDeck!)
+
+
+
 
 
 #Reset Card Deck (Adds the missing cards back)

@@ -72,7 +72,7 @@ gameInfoMessage = ""
 
 #NEW!!
 #Hold's the player's personal card deck
-playerDeck = ""     #Make a function that will scrape a player's deck of cards from their deck...
+cardDeck = []     #Make a function that will scrape a player's deck of cards from their deck...
 
 
 #NEW!!!
@@ -207,10 +207,10 @@ def servResp():
             print('\n[Gameplay Command]: ', end="")
 
 
-#LEFT OFF: [10/15/24]
-#NEW!!
 
-        #Gameplay Commands branch
+#LEFT OFF: [10/17/24]
+
+        #[Gameplay Commands] branch
         if gameStarted:
             #Update to the players card-deck (dealt 6 cards, steal card from other player, new card deck, etc...)
             #Message: [Card-Deck Update]: //Information
@@ -232,21 +232,37 @@ def servResp():
 #                print('We made it here1>!>!!')
 
 
+            #Add Cards to card deck     [Dealt cards    or      'Steal']
+            if stringResponse.find("[Dealt Cards]: ") != -1:
+                #Collect the cards from the string response and add them to the player's cardDeck list
+                #Parse through the response and collect all of the '[Dealt Card]: ' encountered
 
-            #Deal Cards to the other players in your current game
-            if isDealer and stringResponse.find("") != -1:
-                #For the number of players.............
-
-
-#PLACEHOLDER
-                print('PLACEHOLDER')
-
+                #Gather the starting index (cards will follow and be separated with ",")
+                delimiter = stringResponse.find("[Dealt Cards]: ")+15
 
 
+                #Use a delimiter so we can break apart the string!! via: find('[Dealt Card]: ')
+                while True:
+                    
+                    #If the delimiter returns -1 end the gather loop
+                    if delimiter == -1:
+                        #Break the while-loop
+                        break
+
+                    #Else, collect the card from the string and add the card to the deck
+                    cardDeck.append(stringResponse[delimiter:stringResponse.find(",")])
+
+                    #Update the delimiter
+                    delimiter = stringResponse.find(",")
+
+                    #Update the stringResponse (trim the collected cards)
+
+                
+                #PLACEHOLDER!!
+                print('placeholder')
 
 
-
-        #If a game has not started, response is "Server --> Client"
+        #[Server Commands Only...]
         if not gameStarted:
             #Print the server's response
             print(f"\nServer Response: {serverResponse.decode('utf-8')}" + "\n\nCommand to the Server: ", end="")    
