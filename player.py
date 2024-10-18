@@ -197,6 +197,7 @@ def servResp():
 
             #Print the Game Information in a Menu-like format
             displayGame(stringResponse[stringResponse.find("[Game Identifier]: "):])
+            print('\n[Gameplay Command]: ', end="")
 
 
 #LEFT OFF: [10/15/24]
@@ -226,8 +227,7 @@ def servResp():
 
 
 
-            #
-            print('\n[Gameplay Command]: ', end="")
+           
 
             #
 
