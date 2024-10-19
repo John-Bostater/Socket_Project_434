@@ -236,8 +236,8 @@ def dealCards(gameIdentifier):
             #Remove the pulled card from the reference deck
             del referenceDeck[shuffleNum]
 
-#DEBUG!!!
-    #print the created card deck for the player
+
+
     
 
 #NEW!!
@@ -247,6 +247,7 @@ def shuffleDeck(gameIdentifier):
     shuffledDeck = []
 
 #NEW!!
+    #get the reference deck ready for use
     global referenceDeck
 
     #Shuffle/Create the new 52 card deck as a shuffling/rng of the reference deck
@@ -266,7 +267,9 @@ def shuffleDeck(gameIdentifier):
     referenceDeck = resetDeck()
 
 #DEBUG PRINT
-    print('[Shuffled Deck!!]\n', shuffledDeck, "\n\n[Length of the new deck]:", str(len(shuffledDeck)))
+    #print('[Shuffled Deck!!]\n', shuffledDeck, "\n\n[Length of the new deck]:", str(len(shuffledDeck)))
+    print('Game id!?!: ', gameIdentifier)
+
 
     #return the deck created!
     return shuffledDeck
@@ -477,7 +480,7 @@ while True:
                     updatedPlayer = (player[0], player[1], player[2], player[3], "dealer", "in-play")
 
                     #Build the message to be sent to the Dealer
-                    messageToDealer = "SUCESSS\n\n[Game Started]: dealer\n\n[Game Identifier]: " + str(len(gamesList)) + "\n\n[Card Dealer]: " + dealerName + "\n\n[Players in Game]:\n"
+                    messageToDealer = "SUCESSS\n\n[Game Started]: dealer\n\n[Game-Id]: " + str(len(gamesList)) + "\n\n[Card Dealer]: " + dealerName + "\n\n[Players in Game]:\n"
 
                     #Break the loop                    
                     break
@@ -520,7 +523,7 @@ while True:
 
 
                     #Message to be sent to the Player(s)
-                    messageToPlayer = "SUCCESS\nGame Started: player\n[Game Identifier]: " + str(len(gamesList))  + "\n\n[Dealer]: " + dealerName + "\n\n[Players in Game]:\n"
+                    messageToPlayer = "SUCCESS\nGame Started: player\n[Game-Id]: " + str(len(gamesList))  + "\n\n[Dealer]: " + dealerName + "\n\n[Players in Game]:\n"
 
                  
                 #Sufficient number of players added
@@ -563,7 +566,7 @@ while True:
 
         #Parse all the Registered Players/Tuples so their info can be printed
         for game in gamesList:
-            queryMessage += f"\n[Game Identifier]: {game[0]}\n"
+            queryMessage += f"\n[Game-Id]: {game[0]}\n"
 
             #Print all of the tuple elements
             queryMessage += f" \n [Dealer]: {game[1]}\n\n [Other Players]:\n"            
@@ -584,7 +587,7 @@ while True:
         #Delimiter for breaking apart the clientRequest and getting information
         delimiter = clientRequest.find(" ")+1
 
-        #Get the game identifier from the other half of the client request
+        #Get the Game-Id from the other half of the client request
         gameId = clientRequest[delimiter:]
 
 
@@ -618,6 +621,9 @@ while True:
         sendClientMessage(currentClientAddress, deRegMsg)
 
 
+
+#LEFT OFFF [10/18/24]
+
 #NEW!!!
     #Allocate this area of the script for gameplay commands //just to be better organized
     elif clientRequest.find("[Gameplay Command]: ") != -1:
@@ -625,7 +631,7 @@ while True:
         print('Here at least?!!?')
 
         #Shuffle Cards  [Dealer Only]
-        if clientRequest.find("shuffle deck") != -1:
+        if clientRequest.find("shuffle deck") != -1 and clientRequest.find("[Game-Id]: ") != -1:
             #Get the client's address from the incoming message
             for player in registeredPlayers:
                 #If the player is the dealer and in an active game, allow the shuffling of cards!!
@@ -634,7 +640,7 @@ while True:
                     print('Shuffling card deck')
 
                     #Shuffle the card deck, use the Game-Identifier             OR  +19?!?!?!
-                    shuffleDeck(clientRequest[clientRequest.find("[Game-Id]: ")+18:clientRequest.find("\n\n[Gameplay Command]: ")])
+                    shuffleDeck(clientRequest[clientRequest.find("[Game-Id]: ")+11:])
 
 
         #Deal Cards  [Dealer Only]

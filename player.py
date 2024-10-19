@@ -180,7 +180,7 @@ def userInp():
         sendServerMessage(str(input()))
 
 
-#Print and handle server responses
+#Handle Server Responses as a Client/Player
 def servResp():
     #Set up the gameStarted flag as a global variable so our re-def does not break
     global gameStarted
@@ -222,13 +222,22 @@ def servResp():
 
                     #Gather the game identifier
                     global gameIdentifier
-                    gameIdentifier = stringResponse[stringResponse.find("[Game-Id]: ")+10:stringResponse.find("\n\n[Card Dealer]:")]
-
+                    gameIdentifier = stringResponse[stringResponse.find("[Game-Id]: "):stringResponse.find("\n\n[Card Dealer]:")]
 
 
             #Print the Game Information in a Menu-like format
-            displayGame(stringResponse[stringResponse.find("[Game Identifier]: "):])
+            displayGame(stringResponse[stringResponse.find("[Game Started]: "):])
             print('\n[Gameplay Command]: ', end="")
+
+
+
+#LEFT OFF: [10/18/24]
+        #Dealt Cards (Add all of the cards given to you to your deck!)
+        elif stringResponse.find("[Dealt Cards]: ") != -1:
+            #PLACEHOLDER!!
+            print('Placeholder')
+
+
 
 
 
