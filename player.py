@@ -231,17 +231,9 @@ def servResp():
 
 
 
-#LEFT OFF: [10/18/24]
-        #Dealt Cards (Add all of the cards given to you to your deck!)
-        elif stringResponse.find("[Dealt Cards]: ") != -1:
-            #PLACEHOLDER!!
-            print('Placeholder')
 
 
-
-
-
-#LEFT OFF: [10/17/24]
+#LEFT OFF:      [10/18/24]
 
         #[Gameplay Commands] branch
         if gameStarted:
@@ -283,9 +275,11 @@ def servResp():
 
                     #Update the stringResponse (trim the collected cards)
 
-                
-                #PLACEHOLDER!!
-                print('placeholder')
+            
+#DEBUG!!!
+                print("Player's card deck: ", cardDeck)
+
+  
 
 
         #[Non-Gameplay Commands]
