@@ -74,6 +74,7 @@ gameStarted = False
 #NEW!!
 #Hold's the player's personal card deck
 cardDeck = []     #Make a function that will scrape a player's deck of cards from their deck...
+    
 
 #NEW!!!
 #Identifier number for the game the player is currently in
@@ -85,7 +86,7 @@ isDealer = False
 
 
 
-#Print Functions
+#Print and Terminal Functions
 #-------------------------------------------------------------------------------------------------------
 #Main/First Menu the player see's, this is for interacting with pre-game functions as seen below...
 def displayPlayerGuide():
@@ -115,18 +116,17 @@ def displayPlayerGuide():
 
 
 #Game Menu, Once a new game has started they player will see the following menu below
-def displayGame(gameInfo):
+def displayGameInformation(gameInfo):
     print("****************************************************************************************")
     print("*                                   Live Game                                          *")
     print("****************************************************************************************")
     #Section for displaying game information:  
-    print("{Game Commands}\n")
-    print("  [Deal Cards]:      deal\n")
-    print("  []:      deal")
-    print("****************************************************************************************")
-    #Section for displaying game information:  
     print("{Game Information}\n")
+    #Prints the remaining game information
     print(gameInfo)
+#NEW!!!
+    #Command for the 'help' print that will display the gameplay command menu...
+    print("\n[Display Game Commands via: 'help']")
     print("****************************************************************************************")
     #User-Input Space
     #print("\n[Gameplay Command]: ", end="")
@@ -134,7 +134,32 @@ def displayGame(gameInfo):
 
 
 #NEW!!
-#Display the players
+#Display the [Gameplay Commands] that can be sent to the server (& other players)
+def displayGameCommands():
+    #Clear the terminal of previous commands, display the help menu (this will clear things up)
+
+    #Linux & Unix terminal clear
+    if str(os.name) != 'nt':
+        os.system("clear")
+    #Windows terminal clear
+    else:
+        os.system("cls")
+
+    #Print the new set of Commands
+    print("****************************************************************************************")
+    print("*                                    Help Menu                                         *")
+    print("****************************************************************************************")
+    print("{Gameplay Commands}\n")
+    print("[Shuffle Deck {Dealer Only}]:        shuffle deck\n")
+    print("[Deal Cards {Dealer Only}]:          deal cards\n")
+    print("[Steal Card]:                        steal card from <playerName>")
+    print("****************************************************************************************")
+    print("\n[Gameplay Command]: ", end="")
+
+
+#NEW!!
+#Display the Cards of the player and the other players
+
 
 
 
@@ -153,16 +178,17 @@ def playerInbox():
 def sendServerMessage(message):
     #Send Gameplay Message to the Server, if theplayer is in an active game
     if gameStarted:
-        #Gameplay message variable
+        #Gameplay message variable (Local)
         gamePlayMessage = ""
 
-        #If the player is also the dealer, include the game-identifier in the message
-        if isDealer:
-            #Add the game-identifier
-            gamePlayMessage += ("[Game-Id]: " + str(gameIdentifier) + "\n\n")
-
-        #Complete the message
-        gamePlayMessage += "[Gameplay Command]: " + message
+        #[Dealer Message]
+        if isDealer and gameStarted:
+            #Add the Game-Id
+            gamePlayMessage += "[Player-Type]: Dealer\n\n[Game-Id]: " + str(gameIdentifier) + "\n\n[Gameplay Command]: " + message
+        #[Player Message]
+        else:
+            #Contains Game-Id for easier commmand acknowledgement 
+            gamePlayMessage += "[Player-Type]: Player\n\n[Game-Id]: " + str(gameIdentifier) + "\n\n[Gameplay Command]: " + message
 
         #Send the gameplay message to the server
         playerSocket.sendto(gamePlayMessage.encode('utf-8'), serverAddress)
@@ -176,8 +202,18 @@ def sendServerMessage(message):
 def userInp():
     #Listen for the user's input until the exitFlag has been activated
     while threadsRunning:
-        #Send commands to the Server/tracker.py
-        sendServerMessage(str(input()))
+        #Collect user's command(s) as a variable so we can check for 'help'
+        userInputStr = str(input())
+
+        #If the user has entered the 'help' command, clear the termninal and display the gameplay command menu
+        if userInputStr.find('help') != -1:
+            #Print the [Gameplay Commands] menu
+            displayGameCommands()
+        #Else, Send Command to Server 
+        else:
+            #Send commands to the Server/tracker.py
+            sendServerMessage(userInputStr)
+
 
 
 #Handle Server Responses as a Client/Player
@@ -222,21 +258,19 @@ def servResp():
 
                     #Gather the game identifier
                     global gameIdentifier
-                    gameIdentifier = stringResponse[stringResponse.find("[Game-Id]: "):stringResponse.find("\n\n[Card Dealer]:")]
+                    gameIdentifier = stringResponse[stringResponse.find("[Game-Id]: ")+11:stringResponse.find("\n\n[Card Dealer]:")]
 
 
             #Print the Game Information in a Menu-like format
-            displayGame(stringResponse[stringResponse.find("[Game Started]: "):])
-            print('\n[Gameplay Command]: ', end="")
-
-
+            displayGameInformation(stringResponse[stringResponse.find("[Game-Id]: "):])
+            #print('\n[Gameplay Command]: ', end="")
 
 
 
 #LEFT OFF:      [10/18/24]
 
         #[Gameplay Commands] branch
-        if gameStarted:
+        elif gameStarted:
             #Update to the players card-deck (dealt 6 cards, steal card from other player, new card deck, etc...)
             #Message: [Card-Deck Update]: //Information
 
@@ -268,22 +302,23 @@ def servResp():
                         break
 
                     #Else, collect the card from the string and add the card to the deck
-                    cardDeck.append(stringResponse[delimiter:stringResponse.find(",")])
+                    cardDeck.append(stringResponse[delimiter:])
 
                     #Update the delimiter
                     delimiter = stringResponse.find(",")
 
                     #Update the stringResponse (trim the collected cards)
 
-            
+
 #DEBUG!!!
                 print("Player's card deck: ", cardDeck)
 
+#NEW!!!
+            #Organize commands
+            print('\n[Gameplay Command]: ', end="")
   
-
-
         #[Non-Gameplay Commands]
-        if not gameStarted:
+        else:
             #Print the server's response
             print(f"\nServer Response: {serverResponse.decode('utf-8')}" + "\n\nCommand to the Server: ", end="")    
 #-------------------------------------------------------------------------------------
