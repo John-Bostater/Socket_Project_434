@@ -601,10 +601,15 @@ while True:
     #End Games
     elif clientRequest.find("end") != -1 and len(clientRequest) > 3:
         #Delimiter for breaking apart the clientRequest and getting information
-        delimiter = clientRequest.find(" ")+1
+        delimiter = clientRequest.find("end ")+4
 
         #Get the Game-Id from the other half of the client request
-        gameId = clientRequest[delimiter:]
+        gameId = clientRequest[delimiter:clientRequest[delimiter:].find(" ")]
+        
+
+        #Get the dealer's name
+#        dealerName = clientRequest[]
+
 
 #DEBUG!!
         print("Game Id to End!!:", gameId)

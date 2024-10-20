@@ -66,15 +66,15 @@ threadsRunning = False
 gameStarted = False
 
 
+#Holds the 6 card's dealt to the player, update as we go along...
+cardDeck = []     #Make a function that will scrape a player's deck of cards from their deck...
 
-#NEW!!!
-#Hold's the message containing information of the current game the player is in
-#gameInfoMessage = ""
 
 #NEW!!
-#Hold's the player's personal card deck
-cardDeck = []     #Make a function that will scrape a player's deck of cards from their deck...
-    
+#Interactable version of 'cardDeck', displayable to player and other players
+gameDeck = ["***","***","***","***","***","***"]
+
+
 
 #NEW!!!
 #Identifier number for the game the player is currently in
@@ -152,6 +152,13 @@ def displayGameCommands():
     print("{Gameplay Commands}\n")
     print("[Shuffle Deck {Dealer Only}]:        shuffle deck\n")
     print("[Deal Cards {Dealer Only}]:          deal cards\n")
+
+    #NEW!!
+    print("[Flip Card]:                         flip <card index>\n") #Card index: 0-5  {left -> right}
+    print("[Draw Card]:                         draw card\n")
+    print("[Message Inbox]:                     inbox")   #Send a Message to other player
+    #print("")
+
     print("[Steal Card]:                        steal card from <playerName>")
     print("****************************************************************************************")
     print("\n[Gameplay Command]: ", end="")
@@ -163,13 +170,14 @@ def displayGame(gameView=None):
     print("****************************************************************************************")
     print("*                                   Live Game View                                     *")
     print("****************************************************************************************")
-    #Prints the other players decks (this will arrive as a message from the server...)
+    #Prints the game's live stats:  Score, Hole #, Other Player's card decks
     if not gameView is None:
-        print(gameView + '\n')
+        print(gameView + '\n\n')
 
     #Print the Player's personal deck (Specified format)
-    print(f"                                   {cardDeck[0]}  {cardDeck[1]}  {cardDeck[2]}                                       ")
-    print("")
+    print("[Current Card Deck]:")
+    print(f"\t\t\t{gameDeck[0]} {gameDeck[1]} {gameDeck[2]}")
+    print(f"\t\t\t{gameDeck[3]} {gameDeck[4]} {gameDeck[5]}")
     print("****************************************************************************************")
     print("\n[Gameplay Command]: ", end="")
 
@@ -177,7 +185,6 @@ def displayGame(gameView=None):
 
 #PLACEHOLDER
     print('Placeholder')
-
 
 
 
@@ -292,13 +299,9 @@ def servResp():
 #STATUS: Unfinished
             #Add Cards to personal deck
             if stringResponse.find("[Dealt Cards]: ") != -1:
-#DEBUG!!
-                #print('Given Cards:', stringResponse[stringResponse.find("[Dealt Cards]: ")+15:])
-
-
-                #NEW!!
                 #Use 'eval' to convert the String message to a list (can be done bc of formatting)
-                cardDeck = eval(stringResponse[stringResponse.find("[Dealt Cards]: ")+15:])
+                global cardDeck
+                cardDeck += eval(stringResponse[stringResponse.find("[Dealt Cards]: ")+15:])
 
 
                 #Print Response (Hide the cards transmitted)
