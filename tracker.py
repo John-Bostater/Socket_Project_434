@@ -231,12 +231,11 @@ def dealCards(gameIdentifier):
         #Gather card from the Deck used by the game
         hold = mainDecks[f"Game-Id: {gameIdentifier}"].pop()
 
-        #Pop a card from the game's unique and shuffled deck
-    
+        #Pop a card from the game's unique and shuffled deck    
         playerDecks[f"{gamesList[f'Game-Id: {gameIdentifier}'][1]}-{gameIdentifier}"].append(hold)
 
 
-    #Deal 6 cards to every other player's deck (including dealer)
+    #Deal 6 cards to every other player's deck
     for i in range((len(gamesList[f"Game-Id: {gameIdentifier}"][2])) * 6):
         #Gather card from the Deck used by the game
         hold = mainDecks[f"Game-Id: {gameIdentifier}"].pop()
@@ -246,20 +245,13 @@ def dealCards(gameIdentifier):
 
 
 #LEFT OFF!!!!   [10/19/24]
-#   We need to get our produced player decks to the players via a messsage!!
-#
-#[Error]:   Encoding error of the playerDeck [List] objects.... need a solution!!
 
-
-    #Now send messages to all players (including dealer) so they can update their personal decks
     #Send the Dealer their Card Deck
-    #sendRegisteredPlayerMessage(gamesList[f"Game-Id: {gameIdentifier}"][1], message=playerDecks[f"{gamesList[f'Game-Id: {gameIdentifier}'][1]}-{gameIdentifier}"])
-
+    sendRegisteredPlayerMessage(gamesList[f"Game-Id: {gameIdentifier}"][1], message=str(playerDecks[f"{gamesList[f'Game-Id: {gameIdentifier}'][1]}-{gameIdentifier}"]))
 
     #Send the other players their Card Deck
-#    for player in gamesList[int(gameIdentifier)][2]:
-#        sendRegisteredPlayerMessage(player[0], playerDecks[f""])
-
+    for player in gamesList[f"Game-Id: {gameIdentifier}"][2]:
+        sendRegisteredPlayerMessage(player[0], message=str(playerDecks[f"{player[0]}-{gameIdentifier}"]))
 
 
 
@@ -439,11 +431,7 @@ while True:
 
 
 
-#LEFT OFF: [10/14/24]  
-    # Make the message sent to the player regarding "gameInfo" look similar to
-
-
-#STATUS: Unfinished
+#STATUS: Finished!?!?
     #Start Game
     elif clientRequest.find("start game") != -1:
         #Collect the parameters of the 'start game' command
@@ -682,6 +670,11 @@ while True:
                     #Break the for loop (every player has been given their deck and messaged!)
                     break
         
+        #Invalid Command
+        else:
+            #Send a message to the Client, informing them of their invalid command
+            sendClientMessage(currentClientAddress, "Invalid Command")
+
 
     #Invalid Command
     else:
