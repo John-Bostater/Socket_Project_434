@@ -247,7 +247,7 @@ def dealCards(gameIdentifier):
 #LEFT OFF!!!!   [10/19/24]
 
     #Send the Dealer their Card Deck
-    sendRegisteredPlayerMessage(gamesList[f"Game-Id: {gameIdentifier}"][1], message=str(playerDecks[f"{gamesList[f'Game-Id: {gameIdentifier}'][1]}-{gameIdentifier}"]))
+    sendRegisteredPlayerMessage(gamesList[f"Game-Id: {gameIdentifier}"][1], message=("[Dealt Cards]: " + str(playerDecks[f"{gamesList[f'Game-Id: {gameIdentifier}'][1]}-{gameIdentifier}"])))
 
     #Send the other players their Card Deck
     for player in gamesList[f"Game-Id: {gameIdentifier}"][2]:
@@ -280,17 +280,21 @@ def shuffleDeck(gameIdentifier):
     referenceDeck = resetDeck()
 
 #DEBUG PRINT
-    print('[Shuffled Deck!!]\n', shuffledDeck, "\n\n[Length of the new deck]:", str(len(shuffledDeck)))
-    print('Game id!?!:', gameIdentifier)
+    #print('[Shuffled Deck!!]\n', shuffledDeck, "\n\n[Length of the new deck]:", str(len(shuffledDeck)))
+    #print('Game id!?!:', gameIdentifier)
 
 
     #Add the new game deck to the List of all game decks
     mainDecks[f"Game-Id: {gameIdentifier}"] = shuffledDeck
 
+    
+    #Send a Success message to the dealer
+    sendRegisteredPlayerMessage(gamesList[f"Game-Id: {gameIdentifier}"][1], "SUCCESS")
+
 
 #DEBUG!!
     #Print the main Deck
-    print("DEbug Main Deck:", mainDecks)    
+    #print("DEbug Main Deck:", mainDecks)    
 
 
 
@@ -519,7 +523,7 @@ while True:
                     otherPlayers.append(registeredPlayers[randPlayerIndex])
 
                     #Message to be sent to the Player(s)
-                    messageToPlayer = "SUCCESS\nGame Started: player\n[Game-Id]: " + str(len(gamesList))  + "\n\n[Dealer]: " + dealerName + "\n\n[Players in Game]:\n"
+                    messageToPlayer = "SUCCESS\n[Game Started]: player\n[Game-Id]: " + str(len(gamesList))  + "\n\n[Dealer]: " + dealerName + "\n\n[Players in Game]:\n"
 
                  
                 #Sufficient number of players added

@@ -112,7 +112,7 @@ def displayPlayerGuide():
     #Start the game, this command will make the current Player become the dealer
     print("****************************************************************************************")
     print("{Command Space}")
-    print("\nCommand to the Server: ", end="")
+    print("\n[General Command]: ", end="")
 
 
 #Game Menu, Once a new game has started they player will see the following menu below
@@ -129,7 +129,7 @@ def displayGameInformation(gameInfo):
     print("\n[Display Game Commands via: 'help']")
     print("****************************************************************************************")
     #User-Input Space
-    print("\n[Gameplay Command]: ", end="")
+    #print("\n[Gameplay Command]: ", end="")
     #Print all of the players in the game
 
 
@@ -260,9 +260,6 @@ def servResp():
                 os.system("cls")
 
 
-            #Print a One-time success message to the Player, as their game has started
-            #if not gameStarted:
-
             #Success message, necessary for grading
             print("\nServer Response:", serverResponse.decode('utf-8')[:serverResponse.decode('utf-8').find("\n")])
 
@@ -292,47 +289,31 @@ def servResp():
         elif gameStarted:
 
 
-
 #STATUS: Unfinished
-            #Add Cards to card deck     [Dealt cards    or      'Steal']
+            #Add Cards to personal deck
             if stringResponse.find("[Dealt Cards]: ") != -1:
-                #Collect the cards from the string response and add them to the player's cardDeck list
-                #Parse through the response and collect all of the '[Dealt Card]: ' encountered
-
-                #Gather the starting index (cards will follow and be separated with ",")
-                delimiter = stringResponse.find("[Dealt Cards]: ")+15
+#DEBUG!!
+                #print('Given Cards:', stringResponse[stringResponse.find("[Dealt Cards]: ")+15:])
 
 
-                #Use a delimiter so we can break apart the string!! via: find('[Dealt Card]: ')
-                while True:
-                    
-                    #If the delimiter returns -1 end the gather loop
-                    if delimiter == -1:
-                        #Break the while-loop
-                        break
+                #NEW!!
+                #Use 'eval' to convert the String message to a list (can be done bc of formatting)
+                cardDeck = eval(stringResponse[stringResponse.find("[Dealt Cards]: ")+15:])
 
-                    #Else, collect the card from the string and add the card to the deck
-                    cardDeck.append(stringResponse[delimiter:])
 
-                    #Update the delimiter
-                    delimiter = stringResponse.find(",")
-
-                    #Update the stringResponse (trim the collected cards)
+                #Print Response (Hide the cards transmitted)
+                print(f"\nServer Response: Cards have been added to Personal Deck\n\n[Gameplay Command]: ", end="")
 
 #DEBUG!!!
                 print("Player's card deck: ", cardDeck)
-
-
-
-
-#Fix this
-            #Organize commands
-            print(f"\nServer Response: {stringResponse}\n\n[Gameplay Command]: ", end="")
+            else:
+                #Print Response
+                print(f"\nServer Response: {stringResponse}\n\n[Gameplay Command]: ", end="")
   
         #[Non-Gameplay Commands]
         else:
             #Print the server's response
-            print(f"\nServer Response: {stringResponse}\n\nCommand to the Server: ", end="")    
+            print(f"\nServer Response: {stringResponse}\n\n[General Command]: ", end="")    
 #-------------------------------------------------------------------------------------
 
 
