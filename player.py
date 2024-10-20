@@ -129,7 +129,7 @@ def displayGameInformation(gameInfo):
     print("\n[Display Game Commands via: 'help']")
     print("****************************************************************************************")
     #User-Input Space
-    #print("\n[Gameplay Command]: ", end="")
+    print("\n[Gameplay Command]: ", end="")
     #Print all of the players in the game
 
 
@@ -159,6 +159,24 @@ def displayGameCommands():
 
 #NEW!!
 #Display the Cards of the player and the other players
+def displayGame(gameView=None):
+    print("****************************************************************************************")
+    print("*                                   Live Game View                                     *")
+    print("****************************************************************************************")
+    #Prints the other players decks (this will arrive as a message from the server...)
+    if not gameView is None:
+        print(gameView + '\n')
+
+    #Print the Player's personal deck (Specified format)
+    print(f"                                   {cardDeck[0]}  {cardDeck[1]}  {cardDeck[2]}                                       ")
+    print("")
+    print("****************************************************************************************")
+    print("\n[Gameplay Command]: ", end="")
+
+
+
+#PLACEHOLDER
+    print('Placeholder')
 
 
 
@@ -231,7 +249,7 @@ def servResp():
         
 
         #Game Started, user has been joined into a game
-        if stringResponse.find("[Game Started]: ") != -1:
+        if stringResponse.find("[Game Started]: ") != -1 and not gameStarted:
             #Clear the terminal, display game info UI, and allow the player to interact with the game
 
             #Linux & Unix terminal clear
@@ -243,47 +261,39 @@ def servResp():
 
 
             #Print a One-time success message to the Player, as their game has started
-            if not gameStarted:
-                #Success message
-                print("\nServer Response:", serverResponse.decode('utf-8')[:serverResponse.decode('utf-8').find("\n")])
+            #if not gameStarted:
 
-                #Update the flag (we can now listen for gameplay control messages)
-                gameStarted = True
+            #Success message, necessary for grading
+            print("\nServer Response:", serverResponse.decode('utf-8')[:serverResponse.decode('utf-8').find("\n")])
 
-                #Player is Dealer Check...
-                if stringResponse.find("[Game Started]: dealer") != -1:
-                    #Update the player's personal 'isDealer' flag
-                    global isDealer     #Make the flag global too!
-                    isDealer = True
+            #Update the flag (we can now listen for gameplay control messages)
+            gameStarted = True
 
-                    #Gather the game identifier
-                    global gameIdentifier
-                    gameIdentifier = stringResponse[stringResponse.find("[Game-Id]: ")+11:stringResponse.find("\n\n[Card Dealer]:")]
+            #Player is Dealer Check...
+            if stringResponse.find("[Game Started]: dealer") != -1:
+                #Update the player's personal 'isDealer' flag
+                global isDealer     #Make the flag global too!
+                isDealer = True
+
+                #Gather the game identifier
+                global gameIdentifier
+                gameIdentifier = stringResponse[stringResponse.find("[Game-Id]: ")+11:stringResponse.find("\n\n[Card Dealer]:")]
 
 
             #Print the Game Information in a Menu-like format
             displayGameInformation(stringResponse[stringResponse.find("[Game-Id]: "):])
-            #print('\n[Gameplay Command]: ', end="")
+            print('\n[Gameplay Command]: ', end="")
 
 
 
 #LEFT OFF:      [10/18/24]
 
-        #[Gameplay Commands] branch
+        #[Gameplay Command Branch]
         elif gameStarted:
-            #Update to the players card-deck (dealt 6 cards, steal card from other player, new card deck, etc...)
-            #Message: [Card-Deck Update]: //Information
-
-            #Within this branch, we are listening for GamePlay Commands
 
 
-    #Send a message to the server to deal cards to all of the players in the game
-    #Confirm the dealer on 'tracker.py' end via:    ipv4 and t-port
-                #player[4] == 'dealer'
-                #       AND
-                #player[1]
 
-
+#STATUS: Unfinished
             #Add Cards to card deck     [Dealt cards    or      'Steal']
             if stringResponse.find("[Dealt Cards]: ") != -1:
                 #Collect the cards from the string response and add them to the player's cardDeck list
@@ -309,18 +319,20 @@ def servResp():
 
                     #Update the stringResponse (trim the collected cards)
 
-
 #DEBUG!!!
                 print("Player's card deck: ", cardDeck)
 
-#NEW!!!
+
+
+
+#Fix this
             #Organize commands
-            print('\n[Gameplay Command]: ', end="")
+            print(f"\nServer Response: {stringResponse}\n\n[Gameplay Command]: ", end="")
   
         #[Non-Gameplay Commands]
         else:
             #Print the server's response
-            print(f"\nServer Response: {serverResponse.decode('utf-8')}" + "\n\nCommand to the Server: ", end="")    
+            print(f"\nServer Response: {stringResponse}\n\nCommand to the Server: ", end="")    
 #-------------------------------------------------------------------------------------
 
 

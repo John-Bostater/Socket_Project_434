@@ -95,19 +95,24 @@ referenceDeck = [
 #Registered Players
 registeredPlayers = []
 
-#List of all Games in Progress,  Game-Id, Dealer, Players, Number of Holes
-gamesList = []
+
+#Dictionary (HashMap) of all Games in Progress,  Game-Id, Dealer, Players, Number of Holes
+gamesList = {}
 
 
+#DELETE ME!?!?!?
 #NEW REDEFINITION  (NOT USED YET!!!)
 #List of threads that are running games
 activeGames = []
 
-#Dictionary (HashMap) containing all of the active players card deck's
-playerDecks = {}    #<Name-GameId>, <playerDeck[]> 
 
-#List containing all of the game's Main Card Deck that the card dealer is pulling cards from and shuffling...
-mainDecks = []
+#Every In-Game player's card deck
+playerDecks = {}    # 'Name-GameId': <playerDeck[]> 
+#                         Key       :     Data
+
+#Every active game's Main Card Deck that the card dealer is pulling cards from and shuffling...
+mainDecks = {}     # 'Game-Id: <mainDeck>' 
+#                       Key  :  Data
 
 #Client address of the latest message/command
 currentClientAddress = 0
@@ -204,10 +209,7 @@ def registerPlayer(playerInfo):
 
 
 
-
-#NEW!!!
-# #LEFT OFF: 10/15/24
-
+#DELETE ME!?!?!
 #Start Game
 def startGame():
     #Parameters to include in the functions arg space above!!!!:
@@ -221,38 +223,52 @@ def startGame():
     print('Placeholder')
 
 
+
 #Deal Cards [Dealer Only]
 def dealCards(gameIdentifier):
+    #Deal 6 cards to the dealer first
+    for i in range(6):
+        #Gather card from the Deck used by the game
+        hold = mainDecks[f"Game-Id: {gameIdentifier}"].pop()
 
-    #Add 6 cards to every player's deck (including dealer)
-    for i in range(len((activeGames[gameIdentifier][2] + 1) * 6)):
-        #Pop the card from the game's unique deck, interchangine player every 1 card dealt
-
-
-
-
-    #Deal each player in the game 6 cards
-    #for i in range(len(gamesList[gameIdentifier][2])):
-
-        #Add's 6 cards to each players deck
-    #    for i in range(6):
+        #Pop a card from the game's unique and shuffled deck
+    
+        playerDecks[f"{gamesList[f'Game-Id: {gameIdentifier}'][1]}-{gameIdentifier}"].append(hold)
 
 
-#PLACEHOLDER!!
-    print('Placeholder')
+    #Deal 6 cards to every other player's deck (including dealer)
+    for i in range((len(gamesList[f"Game-Id: {gameIdentifier}"][2])) * 6):
+        #Gather card from the Deck used by the game
+        hold = mainDecks[f"Game-Id: {gameIdentifier}"].pop()
+
+        #Pop the card from the game's unique deck, interchange player every 1 card dealt
+        playerDecks[f"{gamesList[f'Game-Id: {gameIdentifier}'][2][i % (len(gamesList[f'Game-Id: {gameIdentifier}'][2]))][0]}-{gameIdentifier}"].append(hold)
+
+
+#LEFT OFF!!!!   [10/19/24]
+#   We need to get our produced player decks to the players via a messsage!!
+#
+#[Error]:   Encoding error of the playerDeck [List] objects.... need a solution!!
+
+
+    #Now send messages to all players (including dealer) so they can update their personal decks
+    #Send the Dealer their Card Deck
+    #sendRegisteredPlayerMessage(gamesList[f"Game-Id: {gameIdentifier}"][1], message=playerDecks[f"{gamesList[f'Game-Id: {gameIdentifier}'][1]}-{gameIdentifier}"])
+
+
+    #Send the other players their Card Deck
+#    for player in gamesList[int(gameIdentifier)][2]:
+#        sendRegisteredPlayerMessage(player[0], playerDecks[f""])
 
 
 
-#NEW!!
+
+
 #Shuffle the deck
 def shuffleDeck(gameIdentifier):
-#DEBUG!!
-    print('Okayds/d/sa m8i1')
-
     #Deck that will be "shuffled"/created for the game  @game-identifier
     shuffledDeck = []
 
-#NEW!!
     #get the reference deck ready for use
     global referenceDeck
 
@@ -273,10 +289,16 @@ def shuffleDeck(gameIdentifier):
 
 #DEBUG PRINT
     print('[Shuffled Deck!!]\n', shuffledDeck, "\n\n[Length of the new deck]:", str(len(shuffledDeck)))
-    print('Game id!?!: ', gameIdentifier)
+    print('Game id!?!:', gameIdentifier)
 
 
-    #Add the shuffled card deck to it's index (i.e. game-id #)
+    #Add the new game deck to the List of all game decks
+    mainDecks[f"Game-Id: {gameIdentifier}"] = shuffledDeck
+
+
+#DEBUG!!
+    #Print the main Deck
+    print("DEbug Main Deck:", mainDecks)    
 
 
 
@@ -300,7 +322,6 @@ def resetDeck():
 
 
 
-
 #Program Functions
 #-------------------------------------------------------------------------------------
 #Main menu of the Server/Tracker (Sets up the scene for displaying incoming messages)
@@ -321,19 +342,6 @@ def playerIsRegistered(playerName):
             return True
     
     #Else, return's false (playerName is NOT registered)
-    return False
-
-
-#returns T/F as to whether the player of 'playerName' is in an active game or not
-def playerInActiveGame(playerName):
-    #Parse the gamesList tuples and look for a matching name
-    for player in gamesList:
-        #If the player of "playerName" is in an active game, return True
-        if player[0] == playerName:
-            #playerName IS registered
-            return True
-    
-    #Else, return's false (playerName is NOT in an active game)
     return False
 
 
@@ -465,7 +473,7 @@ while True:
 
         #Number of Players falls within the appropriate range:  2 <= x <= 4
         #Number og Holes falls within the appropriate range: 1 <= y <= 9
-        if playerIsRegistered(dealerName) and not playerInActiveGame(dealerName) and numberOfPlayers >= 2 and numberOfPlayers <= 4 and numberOfHoles >= 1 and numberOfHoles <= 9 and not (numberOfPlayers > len(registeredPlayers)): 
+        if playerIsRegistered(dealerName) and numberOfPlayers >= 2 and numberOfPlayers <= 4 and numberOfHoles >= 1 and numberOfHoles <= 9 and not (numberOfPlayers > len(registeredPlayers)): 
             #Index variable
             dealerIndex = 0
 
@@ -528,8 +536,10 @@ while True:
                  
                 #Sufficient number of players added
                 if addedPlayers == numberOfPlayers-1:
+                    #Create the new game tuple
                     #Add the player list to the new game tuple
-                    gamesList.append((len(gamesList), dealerName, otherPlayers))
+                    gamesList[f"Game-Id: {len(gamesList)}"] = (len(gamesList), dealerName, otherPlayers)
+
 
                     #Parse the 'otherPlayers' list and compile a message to send to the dealer and other players
                     for player in otherPlayers:
@@ -548,18 +558,22 @@ while True:
                         sendRegisteredPlayerMessage(player[0], messageToPlayer)
                         
                         #Instantiate a new Card-Deck for the Player:    
-                        playerDecks[f"{player[0]}-{len(gamesList)}"] = []
+                        playerDecks[f"{player[0]}-{len(gamesList)-1}"] = []
                         #     format   {player-gameId}:  <cardDeckList[]>
 
 
                     #Dealer "Game Started" Message
                     sendRegisteredPlayerMessage(dealerName, messageToDealer)
                     #Instantiate a new Card-Deck for the Dealer:    
-                    playerDecks[f"{dealerName}-{len(gamesList)}"] = []
+                    playerDecks[f"{dealerName}-{len(gamesList)-1}"] = []
+
+
+                    #Instantiate a new card deck for the created game
+                    mainDecks[f"Game-Id: {len(gamesList)-1}"] = []
+
 
 #DEBUG!!!
                     print("Player Deck Check!!", playerDecks)
-
 
 
                     #Break the while loop!
@@ -576,16 +590,15 @@ while True:
         queryMessage = "\n\n[Number of Ongoing Games]: " + str(len(gamesList)) + "\n"
 
         #Parse all the Registered Players/Tuples so their info can be printed
-        for game in gamesList:
-            queryMessage += f"\n[Game-Id]: {game[0]}\n"
+        for i in range(len(gamesList)):
+            queryMessage += f"\n[Game-Id]: {i}\n"
 
             #Print all of the tuple elements
-            queryMessage += f" \n[Dealer]: {game[1]}\n\n[Other Players]:\n"            
+            queryMessage += f"\n[Dealer]: {gamesList[f'Game-Id: {i}'][1]}\n\n[Other Players]:\n"            
 
             #Parse all of the other players and add their names to the message
-            #{game[2][0]}
-            for player in game[2]:
-                queryMessage += f"\t{player}\n"
+            for j in range(len(gamesList[f"Game-Id: {i}"][2])):
+                queryMessage += f"\t{gamesList[f'Game-Id: {i}'][2][j]}\n"
 
 
         #Send the query of players to the requesting client/current client
@@ -601,7 +614,7 @@ while True:
         #Get the Game-Id from the other half of the client request
         gameId = clientRequest[delimiter:]
 
-
+#DEBUG!!
         print("Game Id to End!!:", gameId)
 
 
@@ -638,43 +651,33 @@ while True:
 #NEW!!!
     #Allocate this area of the script for gameplay commands //just to be better organized
     elif clientRequest.find("[Gameplay Command]: ") != -1:
-#DEBUG!!
-        print('Here at least, like bursada')
-#DEBUG!!
-        print('Here at least?!!?',  clientRequest.find("shuffle deck"), clientRequest.find("[Player-Type]: Dealer"))
-
-
-#NOTE (Delete later...)
-#We use [Player Type]: <Dealer> | <Player>  This matters because messages from either should include [Game-Id] to make things easier down the road...
+    #NOTE (Delete later...)
+        #We use [Player Type]: <Dealer> | <Player>  This matters because messages from either should include [Game-Id] to make things easier down the road...
 
 
 #STATUS: Finished!!!??
         #Shuffle Cards  [Dealer Only]
         if clientRequest.find("shuffle deck") != -1 and clientRequest.find("[Player-Type]: Dealer") != -1:
-
-#DEBUG!!
-            print('desperation here///')
-
-
             #Get the client's address from the incoming message
             for player in registeredPlayers:
                 #If the player is the dealer and in an active game, allow the shuffling of cards!!
                 if player[1] == currentClientAddress[0] and player[2] == str(currentClientAddress[1]) and player[4] == "dealer" and player[5] == "in-play":
-
                     #Shuffle the card deck, use the Game-Id
-                    shuffleDeck(clientRequest[clientRequest.find("[Game-Id]:")+10:])
+                    shuffleDeck(clientRequest[clientRequest.find("[Game-Id]:")+11:clientRequest.find("\n\n[Gameplay Command]")])
+
+                    #break the for-loop
+                    break
 
 
-
-
+#STATUS:    In-Progress, finish up the 'dealCards() function we are calling...
         #Deal Cards  [Dealer Only]
         #Use the created card deck to pop off cards from the top (pop card and deal to player)
         elif clientRequest.find("deal cards") != -1 and clientRequest.find("[Player-Type]: Dealer") != -1:
             #Get the incoming current client's address
             for player in registeredPlayers:
-                if player[1] == currentClientAddress[0] and player[1] == str(currentClientAddress[1]) and player[4] == 'dealer' and player[5] == "in-play":
+                if player[1] == currentClientAddress[0] and player[2] == str(currentClientAddress[1]) and player[4] == "dealer" and player[5] == "in-play":
                     #Dealer has initiated the "dealCards" function!!, call upon the function to do so
-                    dealCards(clientRequest[clientRequest.find("[Game-Id]:")+10])
+                    dealCards(clientRequest[clientRequest.find("[Game-Id]:")+11:clientRequest.find("\n\n[Gameplay Command]")])
                     
                     #Break the for loop (every player has been given their deck and messaged!)
                     break
