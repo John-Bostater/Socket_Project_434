@@ -65,7 +65,7 @@ import random
 import sys
 
 #NEW!!
-import threading    #Use for running multiple games at once??
+#import threading    #Use for running multiple games at once??
 #------------------
 
 
@@ -113,6 +113,15 @@ playerDecks = {}    # 'Name-GameId': <playerDeck[]>
 #Every active game's Main Card Deck that the card dealer is pulling cards from and shuffling...
 mainDecks = {}     # 'Game-Id: <mainDeck>' 
 #                       Key  :  Data
+
+
+#NEWEST
+#Discard pile for each game
+discardDecks = {}
+
+#Very Newest
+playerGameDecks = {}
+
 
 #Client address of the latest message/command
 currentClientAddress = 0
@@ -244,14 +253,16 @@ def dealCards(gameIdentifier):
         playerDecks[f"{gamesList[f'Game-Id: {gameIdentifier}'][2][i % (len(gamesList[f'Game-Id: {gameIdentifier}'][2]))][0]}-{gameIdentifier}"].append(hold)
 
 
-#LEFT OFF!!!!   [10/19/24]
-
     #Send the Dealer their Card Deck
     sendRegisteredPlayerMessage(gamesList[f"Game-Id: {gameIdentifier}"][1], message=("[Dealt Cards]: " + str(playerDecks[f"{gamesList[f'Game-Id: {gameIdentifier}'][1]}-{gameIdentifier}"])))
 
+    #flip two cards (i.e. create a new gameDeck for the player which will start like: 'AS 7D ***'  ... for example)
+    playerGameDecks[f"{gamesList[f'Game-Id: {gameIdentifier}'][1]}-{gameIdentifier}"] = [str(playerDecks[f"{gamesList[f'Game-Id: {gameIdentifier}'][1]}-{gameIdentifier}"][0]), str(playerDecks[f"{gamesList[f'Game-Id: {gameIdentifier}'][1]}-{gameIdentifier}"][1]), "***", "***", "***", "***"]
+
+
     #Send the other players their Card Deck
     for player in gamesList[f"Game-Id: {gameIdentifier}"][2]:
-        sendRegisteredPlayerMessage(player[0], message=str(playerDecks[f"{player[0]}-{gameIdentifier}"]))
+        sendRegisteredPlayerMessage(player[0], message=("[Dealt Cards]: " + str(playerDecks[f"{player[0]}-{gameIdentifier}"])))
 
 
 
@@ -601,18 +612,17 @@ while True:
     #End Games
     elif clientRequest.find("end") != -1 and len(clientRequest) > 3:
         #Delimiter for breaking apart the clientRequest and getting information
-        delimiter = clientRequest.find("end ")+4
+        #delimiter = clientRequest.find("end ")+4
 
         #Get the Game-Id from the other half of the client request
-        gameId = clientRequest[delimiter:clientRequest[delimiter:].find(" ")]
+        gameId = clientRequest[4:clientRequest[4:].find(" ")]
         
 
         #Get the dealer's name
 #        dealerName = clientRequest[]
 
-
 #DEBUG!!
-        print("Game Id to End!!:", gameId)
+        print("Game Id to End!!:", gameId, "\nDealer Name:", dealerName)
 
 
 #STATUS: Finished??

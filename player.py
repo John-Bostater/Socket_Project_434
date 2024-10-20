@@ -167,24 +167,23 @@ def displayGameCommands():
 #NEW!!
 #Display the Cards of the player and the other players
 def displayGame(gameView=None):
-    print("****************************************************************************************")
-    print("*                                   Live Game View                                     *")
+    print("\n****************************************************************************************")
+    print("*                                    Game Data                                         *")
     print("****************************************************************************************")
     #Prints the game's live stats:  Score, Hole #, Other Player's card decks
     if not gameView is None:
         print(gameView + '\n\n')
 
     #Print the Player's personal deck (Specified format)
-    print("[Current Card Deck]:")
-    print(f"\t\t\t{gameDeck[0]} {gameDeck[1]} {gameDeck[2]}")
-    print(f"\t\t\t{gameDeck[3]} {gameDeck[4]} {gameDeck[5]}")
+    print("[Your Card Deck]:")
+    print(f"\t\t\t\t\t{gameDeck[0]} {gameDeck[1]} {gameDeck[2]}")
+    print(f"\t\t\t\t\t{gameDeck[3]} {gameDeck[4]} {gameDeck[5]}")
     print("****************************************************************************************")
     print("\n[Gameplay Command]: ", end="")
 
 
-
 #PLACEHOLDER
-    print('Placeholder')
+#    print('Placeholder')
 
 
 
@@ -301,14 +300,37 @@ def servResp():
             if stringResponse.find("[Dealt Cards]: ") != -1:
                 #Use 'eval' to convert the String message to a list (can be done bc of formatting)
                 global cardDeck
+                global gameDeck
+
+                #If the length of the current card deck is > 6, pop as many cards as we need for 
+
                 cardDeck += eval(stringResponse[stringResponse.find("[Dealt Cards]: ")+15:])
 
-
-                #Print Response (Hide the cards transmitted)
+                #Print Response (Doesn't show cards)
                 print(f"\nServer Response: Cards have been added to Personal Deck\n\n[Gameplay Command]: ", end="")
 
+                #If the length of the incoming/dealt cards list is == 6, 
+                if len(eval(stringResponse[stringResponse.find("[Dealt Cards]: ")+15:])) == 6:
+                    #Create/update the player's 'gameDeck' (this is the deck that the player will be able to see)
+                    gameDeck[0] = cardDeck[0]
+                    gameDeck[1] = cardDeck[1]
+
+                    #Display the game
+                    displayGame()
+                    
 #DEBUG!!!
-                print("Player's card deck: ", cardDeck)
+                    print("Player's card deck: ", cardDeck, "\nGAME DECK!!", gameDeck)
+
+
+            #End Game
+            elif stringResponse.find("[Game Ended]") != -1:
+                #Reset all card decks and flags
+                cardDeck = []
+                gameDeck = []
+                gameStarted = False
+
+
+            #Else, Server response
             else:
                 #Print Response
                 print(f"\nServer Response: {stringResponse}\n\n[Gameplay Command]: ", end="")
