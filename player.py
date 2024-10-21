@@ -124,13 +124,9 @@ def displayGameInformation(gameInfo):
     print("{Game Information}\n")
     #Prints the remaining game information
     print(gameInfo)
-#NEW!!!
     #Command for the 'help' print that will display the gameplay command menu...
     print("\n[Display Game Commands via: 'help']")
     print("****************************************************************************************")
-    #User-Input Space
-    #print("\n[Gameplay Command]: ", end="")
-    #Print all of the players in the game
 
 
 #NEW!!
@@ -152,14 +148,9 @@ def displayGameCommands():
     print("{Gameplay Commands}\n")
     print("[Shuffle Deck {Dealer Only}]:        shuffle deck\n")
     print("[Deal Cards {Dealer Only}]:          deal cards\n")
-
-    #NEW!!
-    print("[Flip Card]:                         flip <card index>\n") #Card index: 0-5  {left -> right}
-    print("[Draw Card]:                         draw card\n")
-    print("[Message Inbox]:                     inbox")   #Send a Message to other player
-    #print("")
-
-    print("[Steal Card]:                        steal card from <playerName>")
+    print("[Draw Card]:                         draw card <stack | discard>\n")
+    print("[Message Inbox]:                     inbox\n")   #Send a Message to other player
+    print("[End-Game]:                          end <game-id #> <dealer name>")
     print("****************************************************************************************")
     print("\n[Gameplay Command]: ", end="")
 
@@ -288,22 +279,16 @@ def servResp():
             print('\n[Gameplay Command]: ', end="")
 
 
-
-#LEFT OFF:      [10/18/24]
-
         #[Gameplay Command Branch]
         elif gameStarted:
 
-
-#STATUS: Unfinished
             #Add Cards to personal deck
             if stringResponse.find("[Dealt Cards]: ") != -1:
                 #Use 'eval' to convert the String message to a list (can be done bc of formatting)
                 global cardDeck
                 global gameDeck
 
-                #If the length of the current card deck is > 6, pop as many cards as we need for 
-
+                #Add the dealt cards to our personal deck
                 cardDeck += eval(stringResponse[stringResponse.find("[Dealt Cards]: ")+15:])
 
                 #Print Response (Doesn't show cards)
@@ -319,7 +304,29 @@ def servResp():
                     displayGame()
                     
 #DEBUG!!!
-                    print("Player's card deck: ", cardDeck, "\nGAME DECK!!", gameDeck)
+                    #print("Player's card deck: ", cardDeck, "\nGAME DECK!!", gameDeck)
+
+
+
+#NEW!!
+            #Draw card from deck and replace one of your own!
+            #User HAS to replace a card in their game deck with the card they have drawn...
+            elif stringResponse.find("[Drawn Card]: ") != -1:
+                #Display the drawn card to the user and tell them the index they would like to
+                print("[Drawn Card]: ", stringResponse[stringResponse.find("[Drawn Card]: ")+15:])
+
+                #Collect the user's input for the index they would like to replace
+                chosenIndex = input("\n\n[Enter Index of Card to Replace]: ")
+
+#DEBUG!!!
+                print("Chosen index:" , chosenIndex)
+
+
+
+                #Send [Proceed] to the server to move onto the next player's turn
+
+
+            #Send a message to the server of the discarded card and add it to the discarded pile
 
 
             #End Game
@@ -386,10 +393,6 @@ playerSocket.bind(playerAddress)
 
 #Print the Command Menu/Main Menu
 displayPlayerGuide()
-
-
-#Later on....
-#May need a new thread for player to player responses??
 
 
 #Threads
