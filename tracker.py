@@ -236,10 +236,8 @@ def dealCards(gameIdentifier):
     #Send the Dealer their Card Deck
     sendRegisteredPlayerMessage(gamesList[f"Game-Id: {gameIdentifier}"][1], message=(gameInfoStr + "\n\n[Dealt Cards]: " + str(playerDecks[f"{gamesList[f'Game-Id: {gameIdentifier}'][1]}-{gameIdentifier}"])))
 
-
     #flip two cards (i.e. create a new gameDeck for the player which will start like: 'AS 7D ***'  ... for example)
     playerGameDecks[f"{gamesList[f'Game-Id: {gameIdentifier}'][1]}-{gameIdentifier}"] = [str(playerDecks[f"{gamesList[f'Game-Id: {gameIdentifier}'][1]}-{gameIdentifier}"][0]), str(playerDecks[f"{gamesList[f'Game-Id: {gameIdentifier}'][1]}-{gameIdentifier}"][1]), "***", "***", "***", "***"]
-
 
     #Send the other players their Card Deck
     for player in gamesList[f"Game-Id: {gameIdentifier}"][2]:
