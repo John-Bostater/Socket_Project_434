@@ -173,12 +173,7 @@ def displayGame(gameView=None):
     print("\n[Gameplay Command]: ", end="")
 
 
-#PLACEHOLDER
-#    print('Placeholder')
 
-
-
-#NEW!!  (unecessary??)
 #Display the Messages between Players
 def playerInbox():
     #Placeholder

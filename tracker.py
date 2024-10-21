@@ -60,9 +60,6 @@
 import socket
 import random
 import sys
-
-#NEW!!
-#import threading    #Use for running multiple games at once??
 #------------------
 
 
