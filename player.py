@@ -301,9 +301,8 @@ def servResp():
                     gameDeck[1] = cardDeck[1]
 
                     #Display the game
-                    displayGame()
-                    
-#DEBUG!!!
+                    displayGame(stringResponse[stringResponse.find("[Hole #]:"):stringResponse.find("\n\n[Dealt Cards]: ")])
+
                     #print("Player's card deck: ", cardDeck, "\nGAME DECK!!", gameDeck)
 
 
@@ -322,7 +321,6 @@ def servResp():
                 print("Chosen index:" , chosenIndex)
 
 
-
                 #Send [Proceed] to the server to move onto the next player's turn
 
 
@@ -331,6 +329,9 @@ def servResp():
 
             #End Game
             elif stringResponse.find("[Game Ended]") != -1:
+                #Print the response and set up space for the next command
+                print(stringResponse[stringResponse.find("SUCCESS"):] + "\n\n[General Command]: ", end="")
+
                 #Reset all card decks and flags
                 cardDeck = []
                 gameDeck = []
